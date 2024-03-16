@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\ValidCpf;
 
 class PeopleRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class PeopleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,20 @@ class PeopleRequest extends FormRequest
      */
     public function rules(): array
     {
+        $peopleId = $this->route('id');
         return [
-            //
+            'name' => ['required'],
+            'birth' => ['required'],
+            'cpf' => ['required', "unique:people,cpf,{$peopleId}", new ValidCpf()],
+            'sex' => ['required'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'Este campo é obrigatório',
+            'cpf.unique' => 'CPF já cadastrado.'
         ];
     }
 }

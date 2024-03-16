@@ -11,13 +11,13 @@ class People extends Model
 
     protected $fillable = [
         'name',
-        // 'birth',
-        // 'cpf',
-        // 'sex',
-        // 'city',
-        // 'neighborhood',
-        // 'street',
-        // 'number',
-        // 'complement',
+        'birth',
+        'cpf',
+        'sex',
+        'city',
+        'neighborhood',
+        'street',
+        'number',
+        'complement',
     ];
 }

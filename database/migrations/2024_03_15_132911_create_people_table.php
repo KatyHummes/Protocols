@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('people', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            // $table->date('birth');
-            // $table->string('cpf')->unique();
-            // $table->string('sex');
-            // $table->string('city')->nullable();
-            // $table->string('neighborhood')->nullable();
-            // $table->string('street')->nullable();
-            // $table->string('number')->nullable();
-            // $table->longText('complement')->nullable();
+            $table->date('birth');
+            $table->string('cpf')->unique();
+            $table->string('sex');
+            $table->string('city')->nullable();
+            $table->string('neighborhood')->nullable();
+            $table->string('street')->nullable();
+            $table->string('number')->nullable();
+            $table->longText('complement')->nullable();
             $table->timestamps();
         });
     }

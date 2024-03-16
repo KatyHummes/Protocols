@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PeopleRequest;
 use App\Models\People;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PeopleController extends Controller
@@ -15,12 +15,20 @@ class PeopleController extends Controller
             'peoples' => $peoples
         ]);
     }
- 
-    public function store(Request $request)
+
+    public function store(PeopleRequest $request)
     {
+        $sex = $request->input('sex')['name'];
         People::create([
             'name' => $request->name,
+            'birth' => $request->birth,
+            'cpf' => $request->cpf,
+            'sex' => $sex,
+            'city' => $request->city,
+            'neighborhood' => $request->neighborhood,
+            'street' => $request->street,
+            'number' => $request->number,
+            'complement' => $request->complement,
         ]);
     }
-
 }
