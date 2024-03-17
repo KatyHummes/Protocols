@@ -11,6 +11,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import { md3 } from 'vuetify/blueprints'
+import VueTheMask from 'vue-the-mask'
 
 const vuetify = createVuetify({
   components,
@@ -29,6 +30,7 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue)
             .use(vuetify)
+            .use(VueTheMask)
             .mount(el);
     },
     progress: {

@@ -25,5 +25,7 @@ Route::middleware([
     // Pessoas
     Route::get('/pessoas', [PeopleController::class, 'index'])->name('people.index');
     Route::post('/pessoa', [PeopleController::class, 'store'])->name('people.store')->middleware([HandlePrecognitiveRequests::class]);
-    
+    Route::delete('/pessoa/{id}', [PeopleController::class, 'destroy'])->name('people.destroy');
+
+   
 });
