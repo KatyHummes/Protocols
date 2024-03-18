@@ -51,7 +51,7 @@ const submit = () => form.submit({
 const showDelete = ref(false);
 const formDelete = ref();
 
-const OpenDeleteModal = (id) => {
+const openDeleteModal = (id) => {
     console.log(id);
     showDelete.value = true;
     formDelete.value = useForm('delete', `/delete/${id}`, {
@@ -142,7 +142,7 @@ const deletePeople = () => {
                                                 </svg>
                                             </button>
 
-                                            <button size="small" @click="OpenDeleteModal(peoples.id)">
+                                            <button size="small" @click="openDeleteModal(people.id)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
                                                     class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-red-500">
@@ -162,19 +162,22 @@ const deletePeople = () => {
     </AppLayout>
 
     <!-- Exclusão de Pessoas -->
-    <Modal :show="OpenDeleteModal" @close="closeDeleteModal">
-        <form @submit.prevent="deletePeople()">
-            <h2 class="flex items-center justify-center p-4 m-4 font-bold">Tem certeza que deseja excluir esta Pessoa?
-            </h2>
-            <div>
-                <v-btn type="button" @click="closeDeleteModal">
-                    Cancelar
-                </v-btn>
-                <v-btn type="submit">
-                    Excluir
-                </v-btn>
-            </div>
-        </form>
+    <Modal :show="showDelete" @close="closeDeleteModal">
+        <div class="p-4">
+            <form @submit.prevent="deletePeople()">
+                <h2 class="flex items-center justify-center border-b-4 text-xl p-4 m-4 font-bold">Tem certeza que deseja excluir esta
+                    Pessoa?
+                </h2>
+                <div class="flex justify-between">
+                    <v-btn type="button" @click="closeDeleteModal">
+                        Cancelar
+                    </v-btn>
+                    <v-btn type="submit">
+                        Excluir
+                    </v-btn>
+                </div>
+            </form>
+        </div>
     </Modal>
 
     <!-- Inclusão de Pessoas -->

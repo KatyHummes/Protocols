@@ -47,3 +47,9 @@ and finally run this command:
 php artisan storage:link
 ```
 - access the URL: http://127.0.0.1:8000/
+
+## Links das Bibliotecas e outros usados no Projeto:
+
+https://jetstream.laravel.com/ para a autenticação e configurações iniciais,
+https://vuetifyjs.com/en/ e https://tailwindcss.com/ para alguns componentes e estruturas do front-end,
+https://undraw.co/illustrations os svgs e o https://heroicons.com/ para os icones.

@@ -32,8 +32,8 @@ class PeopleController extends Controller
         ]);
     }
 
-    public function destroy($id)
+   public function destroy($id)
     {
-        People::destroy($id);
+         People::destroy($id);
     }
 }
