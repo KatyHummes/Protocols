@@ -54,8 +54,8 @@ const formDelete = ref();
 const openDeleteModal = (id) => {
     console.log(id);
     showDelete.value = true;
-    formDelete.value = useForm('delete', `/delete/${id}`, {
-        id: people.id
+    formDelete.value = useForm('delete', `/deletar-pessoa/${id}`, {
+        id: id
     });
 }
 const closeDeleteModal = () => {
@@ -90,14 +90,14 @@ const deletePeople = () => {
                             <v-btn size="large" @click="openCreatePeopleModal">Criar Pessoas</v-btn>
                         </v-col>
 
-                        <v-card title="Pessoas" flat>
+                        <!-- <v-card title="Pessoas" flat>
 
                             <template v-slot:text>
                                 <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
                                     variant="outlined" hide-details single-line></v-text-field>
                             </template>
 
-                        </v-card>
+                        </v-card> -->
 
                         <v-table>
                             <thead>
