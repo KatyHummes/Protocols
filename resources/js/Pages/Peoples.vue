@@ -50,6 +50,7 @@ const submit = () => form.submit({
 // filtros
 const search = ref('');
 const page = ref(1);
+const itemsPerPage = 10; 
 
 const filteredPeople = computed(() => {
     const searchTerm = search.value.toLowerCase().trim();
@@ -61,6 +62,10 @@ const filteredPeople = computed(() => {
             people.sex.toLowerCase().includes(searchTerm)
         );
     });
+});
+
+const pageCount = computed(() => {
+    return Math.ceil(filteredPeople.value.length / itemsPerPage);
 });
 
 const updatePage = (newPage) => {
