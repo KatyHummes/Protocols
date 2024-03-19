@@ -32,8 +32,32 @@ class PeopleController extends Controller
         ]);
     }
 
-   public function destroy($id)
+    public function show($id)
     {
-         People::destroy($id);
+        $people = People::find($id);
+        // dd($people);
+        return Inertia::render('EditPeople', [
+            'people' => $people
+        ]);
+    }
+
+    public function update(PeopleRequest $request, $id)
+    {
+        $people = People::find($id);
+        $people->update([
+            'name' => $request->input('name'),
+            'birth' => $request->input('birth'),
+            'cpf' => $request->input('cpf'),
+            'sex' => $request->input('sex'),
+            'city' => $request->input('city'),
+            'neighborhood' => $request->input('neighborhood'),
+            'street' => $request->input('street'),
+            'number' => $request->input('number'),
+            'complement' => $request->input('complement'),
+        ]);
+    }
+    public function destroy($id)
+    {
+        People::destroy($id);
     }
 }

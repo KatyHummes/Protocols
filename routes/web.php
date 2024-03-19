@@ -18,14 +18,14 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
 
-    // Pessoas
+    // Pessoas:
     Route::get('/pessoas', [PeopleController::class, 'index'])->name('people.index');
     Route::post('/pessoa', [PeopleController::class, 'store'])->name('people.store')->middleware([HandlePrecognitiveRequests::class]);
-    Route::delete('/pessoa/{id}', [PeopleController::class, 'destroy'])->name('people.destroy');
+    Route::get('/editar-pessoa/{id}', [PeopleController::class, 'show'])->name('people.show');
+    Route::put('/editar-pessoa/{id}', [PeopleController::class, 'update'])->name('people.update')->middleware([HandlePrecognitiveRequests::class]);
+    Route::delete('/deletar-pessoa/{id}', [PeopleController::class, 'destroy'])->name('people.destroy')->middleware([HandlePrecognitiveRequests::class]);
 
-   
+    // Protocolos:
+    
 });
