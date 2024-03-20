@@ -6,7 +6,6 @@ import { ref, computed, defineProps } from 'vue';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
-
 const toast = useToast();
 
 const props = defineProps({
@@ -47,29 +46,38 @@ const submit = () => form.submit({
     }
 });
 
-// filtros
+// Filtros e paginação
 const search = ref('');
 const page = ref(1);
-const itemsPerPage = 10; 
+const itemsPerPage = 10;
 
-const filteredPeople = computed(() => {
-    const searchTerm = search.value.toLowerCase().trim();
-    return props.peoples.filter(people => {
-        return (
-            people.name.toLowerCase().includes(searchTerm) ||
-            people.birth.toLowerCase().includes(searchTerm) ||
-            people.cpf.toLowerCase().includes(searchTerm) ||
-            people.sex.toLowerCase().includes(searchTerm)
-        );
-    });
+// Definindo a lista de pessoas a serem filtradas
+const filteredPeoples = computed(() => {
+  const searchTerm = search.value.toLowerCase().trim();
+  return props.peoples.filter(people => {
+    return (
+      people.name.toLowerCase().includes(searchTerm) ||
+      people.birth.toLowerCase().includes(searchTerm) ||
+      people.cpf.toLowerCase().includes(searchTerm) ||
+      people.sex.toLowerCase().includes(searchTerm)
+    );
+  });
 });
 
+// Protocols a serem exibidos na página atual
+const displayedPeoples = computed(() => {
+  const start = (page.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredPeoples.value.slice(start, end);
+});
+
+// Número total de páginas
 const pageCount = computed(() => {
-    return Math.ceil(filteredPeople.value.length / itemsPerPage);
+  return Math.ceil(filteredPeoples.value.length / itemsPerPage);
 });
 
 const updatePage = (newPage) => {
-    page.value = newPage;
+  page.value = newPage;
 };
 
 // Modal deletar pessoas
@@ -101,6 +109,7 @@ const deletePeople = () => {
 }
 </script>
 
+
 <template>
     <AppLayout>
         <template #header>
@@ -118,8 +127,7 @@ const deletePeople = () => {
 
                         <v-card title="Pessoas" flat>
                             <template v-slot:text>
-                                <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
-                                    variant="outlined" hide-details single-line></v-text-field>
+                                <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined" hide-details single-line></v-text-field>
                             </template>
                         </v-card>
 
@@ -135,7 +143,7 @@ const deletePeople = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="people in filteredPeople" :key="people.name">
+                                <tr v-for="people in displayedPeoples" :key="people.id">
                                     <td>{{ people.id }}</td>
                                     <td>{{ people.name }}</td>
                                     <td>{{ people.birth }}</td>

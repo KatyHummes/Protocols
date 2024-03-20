@@ -44,30 +44,36 @@ const submit = () => form.submit({
 });
 
 
-// filtros
+// Filtros e paginação
 const search = ref('');
 const page = ref(1);
 const itemsPerPage = 10;
 
-const filteredProtocol = computed(() => {
-    const searchTerm = search.value.toLowerCase().trim();
-    return props.protocols.filter(protocol => {
-        return (
-            protocol.description.toLowerCase().includes(searchTerm) ||
-            protocol.date.toLowerCase().includes(searchTerm) ||
-            protocol.people_id.toLowerCase().includes(searchTerm) ||
-            protocol.id.toLowerCase().includes(searchTerm)
-        );
-    });
+const filteredProtocols = computed(() => {
+  const searchTerm = search.value.toLowerCase().trim();
+  return props.protocols.filter(protocol => {
+    return (
+      protocol.people.name.toLowerCase().includes(searchTerm) ||
+      protocol.date.toLowerCase().includes(searchTerm) ||
+      protocol.id.toString().toLowerCase().includes(searchTerm)
+    );
+  });
+});
+
+const displayedProtocols = computed(() => {
+  const start = (page.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredProtocols.value.slice(start, end);
 });
 
 const pageCount = computed(() => {
-    return Math.ceil(filteredProtocol.value.length / itemsPerPage);
+  return Math.ceil(filteredProtocols.value.length / itemsPerPage);
 });
 
 const updatePage = (newPage) => {
-    page.value = newPage;
+  page.value = newPage;
 };
+
 
 // Modal deletar protocolo
 const showDelete = ref(false);
@@ -110,8 +116,7 @@ const deleteProtocols = () => {
 
                         <v-card title="Protocolos" flat>
                             <template v-slot:text>
-                                <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
-                                    variant="outlined" hide-details single-line></v-text-field>
+                                <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined" hide-details single-line></v-text-field>
                             </template>
                         </v-card>
                         <v-table>
@@ -125,7 +130,7 @@ const deleteProtocols = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="protocol in filteredProtocol" :key="protocol.name">
+                                <tr v-for="protocol in displayedProtocols" :key="protocol.name">
                                     <td>{{ protocol.id }}</td>
                                     <td>{{ protocol.people.name }}</td>
                                     <td>{{ protocol.date }}</td>
