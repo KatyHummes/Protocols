@@ -27,5 +27,6 @@ Route::middleware([
     Route::delete('/deletar-pessoa/{id}', [PeopleController::class, 'destroy'])->name('people.destroy')->middleware([HandlePrecognitiveRequests::class]);
 
     // Protocolos:
-    
+    Route::get('/protocolo', [ProtocolController::class, 'index'])->name('protocols.index');
+    Route::post('/protocolo', [ProtocolController::class, 'store'])->name('protocols.store')->middleware([HandlePrecognitiveRequests::class]);
 });

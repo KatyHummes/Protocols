@@ -14,14 +14,14 @@ const props = defineProps({
 });
 
 // Modal incluir pessoas
-const openingCreatePeopleModal = ref(false);
+const openingPeopleModal = ref(false);
 
 const openCreatePeopleModal = () => {
-    openingCreatePeopleModal.value = true;
+    openingPeopleModal.value = true;
 };
 
 const closeCreatePeopleModal = () => {
-    openingCreatePeopleModal.value = false;
+    openingPeopleModal.value = false;
 };
 
 const form = useForm('post', route('people.store'), {
@@ -195,7 +195,7 @@ const deletePeople = () => {
     </Modal>
 
     <!-- Inclusão de Pessoas -->
-    <Modal :show="openingCreatePeopleModal" @close="closeCreatePeopleModal" :max-width="'6xl'">
+    <Modal :show="openingPeopleModal" @close="closeCreatePeopleModal" :max-width="'6xl'">
         <div class="flex justify-between p-6">
             <h3 class="font-semibold text-xl text-gray-800 leading-tight">
                 Criar Pessoas
