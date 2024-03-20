@@ -29,4 +29,5 @@ Route::middleware([
     // Protocolos:
     Route::get('/protocolo', [ProtocolController::class, 'index'])->name('protocols.index');
     Route::post('/protocolo', [ProtocolController::class, 'store'])->name('protocols.store')->middleware([HandlePrecognitiveRequests::class]);
+    Route::delete('/deletar-protocolo/{id}', [ProtocolController::class, 'destroy'])->name('protocols.destroy');
 });

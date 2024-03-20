@@ -30,4 +30,8 @@ class ProtocolController extends Controller
         ]);
     }
     
+    public function destroy($id)
+    {
+        Protocol::destroy($id);
+    }
 }
