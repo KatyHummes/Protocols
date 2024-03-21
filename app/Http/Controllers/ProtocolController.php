@@ -29,6 +29,28 @@ class ProtocolController extends Controller
             'term' => $request->term,
         ]);
     }
+
+    public function show($id)
+    {
+        $protocol = Protocol::findOrFail($id)->with('people')->first();
+        $peoples = People::get(['id', 'name']);
+        // dd($protocol);
+        return Inertia::render('EditProtocol', [
+            'protocol' => $protocol,
+            'peoples' => $peoples,
+        ]);
+    }
+
+    public function update(ProtocolRequest $request, $id)
+    {
+        $protocol = Protocol::find($id);
+        $protocol->update([
+            'people_id' => $request->people_id,
+            'description' => $request->description,
+            'date' => $request->date,
+            'term' => $request->term,
+        ]);
+    }
     
     public function destroy($id)
     {

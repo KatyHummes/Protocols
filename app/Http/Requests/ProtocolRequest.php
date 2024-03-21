@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Rules\DataPrazoRule;
 
 class ProtocolRequest extends FormRequest
 {
@@ -22,9 +23,9 @@ class ProtocolRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => ['required', 'date'],
+            'date' => ['required', 'date', new DataPrazoRule()],
             'description' => ['required'],
-            'term' => ['required', 'date'],
+            'term' => ['required', 'date', new DataPrazoRule()],
             'people_id' => ['required'],
         ];
     }
@@ -33,6 +34,7 @@ class ProtocolRequest extends FormRequest
         return [
             'required' => 'Este campo é obrigatório',
             'date' => 'Deve ser uma data válida',
+            'DataPrazoRule' => 'O atributo não atende aos requisitos de validação.',
         ];
     }
 }

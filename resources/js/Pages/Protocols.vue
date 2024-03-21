@@ -24,8 +24,8 @@ const closeModal = () => {
     openingModal.value = false;
 };
 
-const form = useForm('post', route('protocols.store'), {
-    id: props.protocols.length + 1,
+const form = useForm('post', route('protocol.store'), {
+    id: props.protocols.id,
     description: '',
     term: '',
     date: '',
@@ -43,6 +43,15 @@ const submit = () => form.submit({
     }
 });
 
+const dateValidation = (date, maxDaysPast) => {
+    const selectedDate = new Date(date);
+    const currentDate = new Date();
+    const maxDateAllowed = new Date().setDate(currentDate.getDate() - maxDaysPast);
+
+    return [
+        () => selectedDate <= currentDate && selectedDate >= maxDateAllowed || `A data deve estar dentro do intervalo de ${maxDaysPast} dias no passado e até o dia atual.`,
+    ];
+};
 
 // Filtros e paginação
 const search = ref('');
@@ -50,28 +59,28 @@ const page = ref(1);
 const itemsPerPage = 10;
 
 const filteredProtocols = computed(() => {
-  const searchTerm = search.value.toLowerCase().trim();
-  return props.protocols.filter(protocol => {
-    return (
-      protocol.people.name.toLowerCase().includes(searchTerm) ||
-      protocol.date.toLowerCase().includes(searchTerm) ||
-      protocol.id.toString().toLowerCase().includes(searchTerm)
-    );
-  });
+    const searchTerm = search.value.toLowerCase().trim();
+    return props.protocols.filter(protocol => {
+        return (
+            protocol.people.name.toLowerCase().includes(searchTerm) ||
+            protocol.date.toLowerCase().includes(searchTerm) ||
+            protocol.id.toString().toLowerCase().includes(searchTerm)
+        );
+    });
 });
 
 const displayedProtocols = computed(() => {
-  const start = (page.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return filteredProtocols.value.slice(start, end);
+    const start = (page.value - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredProtocols.value.slice(start, end);
 });
 
 const pageCount = computed(() => {
-  return Math.ceil(filteredProtocols.value.length / itemsPerPage);
+    return Math.ceil(filteredProtocols.value.length / itemsPerPage);
 });
 
 const updatePage = (newPage) => {
-  page.value = newPage;
+    page.value = newPage;
 };
 
 
@@ -102,6 +111,8 @@ const deleteProtocols = () => {
         }
     });
 }
+
+
 </script>
 
 <template>
@@ -116,7 +127,8 @@ const deleteProtocols = () => {
 
                         <v-card title="Protocolos" flat>
                             <template v-slot:text>
-                                <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined" hide-details single-line></v-text-field>
+                                <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
+                                    variant="outlined" hide-details single-line></v-text-field>
                             </template>
                         </v-card>
                         <v-table>
@@ -124,8 +136,8 @@ const deleteProtocols = () => {
                                 <tr>
                                     <th class="text-left">Número</th>
                                     <th class="text-left">Contribuinte</th>
-                                    <th class="text-left">Data</th>
-                                    <th class="text-left">Prezo</th>
+                                    <th class="text-left">Data de Abertura</th>
+                                    <th class="text-left">Prazo</th>
                                     <th class="text-left">Ações</th>
                                 </tr>
                             </thead>
@@ -137,7 +149,7 @@ const deleteProtocols = () => {
                                     <td>{{ protocol.term }}</td>
                                     <td>
                                         <div class="flex gap-4">
-                                            <!-- <a :href="route('protocol.show', protocol.id)">
+                                            <a :href="route('protocol.show', protocol.id)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
                                                     class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">
@@ -146,7 +158,7 @@ const deleteProtocols = () => {
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                                 </svg>
-                                            </a> -->
+                                            </a>
 
                                             <button size="small" @click="openDeleteModal(protocol.id)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -206,23 +218,16 @@ const deleteProtocols = () => {
         <div class="p-6">
             <form @submit.prevent="submit">
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="mb-7">
-                        <v-text-field v-model="form.id" label="Número" variant="outlined" @change="form.validate('id')"
-                            disabled></v-text-field>
-                        <span v-if="form.invalid('id')" class="text-base text-red-500">
-                            {{ form.errors.id }}
-                        </span>
-                    </div>
+
                     <div>
                         <v-text-field v-model="form.date" label="Data" type="date" variant="outlined"
+                            :rules="[() => dateValidation(form.date, 30, 0)]"
                             @change="form.validate('date')"></v-text-field>
-                        <span v-if="form.invalid('date')" class="text-base text-red-500">
-                            {{ form.errors.date }}
-                        </span>
+                        <span v-if="form.invalid('date')" class="text-base text-red-500">{{ form.errors.date }}</span>
                     </div>
                     <div>
                         <div class="border-2 border-black rounded-md">
-                            <select v-model="form.people_id">
+                            <select v-model="form.people_id" class="w-full" placeholder="Clique para Selecionar">
                                 <option v-for="people in peoples" :value="people.id">{{ people.name }}</option>
                             </select>
                         </div>
@@ -232,10 +237,9 @@ const deleteProtocols = () => {
                     </div>
                     <div>
                         <v-text-field v-model="form.term" label="Prazo" type="date" variant="outlined"
+                            :rules="[() => dateValidation(form.term, 5, 30)]"
                             @change="form.validate('term')"></v-text-field>
-                        <span v-if="form.invalid('term')" class="text-base text-red-500">
-                            {{ form.errors.term }}
-                        </span>
+                        <span v-if="form.invalid('term')" class="text-base text-red-500">{{ form.errors.term }}</span>
                     </div>
                     <div>
                         <v-textarea v-model="form.description" label="Descrição" variant="outlined"
