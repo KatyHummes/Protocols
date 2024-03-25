@@ -25,7 +25,7 @@ class ProtocolRequest extends FormRequest
         return [
             'date' => ['required', 'date', new DataPrazoRule()],
             'description' => ['required'],
-            'term' => ['required', 'date', new DataPrazoRule()],
+            'term' => ['required'],
             'people_id' => ['required'],
         ];
     }

@@ -1,8 +1,8 @@
 <script setup>
+import { ref, computed, defineProps } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Modal from '@/Components/Modal.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
-import { ref, computed, defineProps } from 'vue';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
@@ -25,10 +25,9 @@ const closeModal = () => {
 };
 
 const form = useForm('post', route('protocol.store'), {
-    id: props.protocols.id,
     description: '',
     term: '',
-    date: '',
+    date: null,
     people_id: null
 });
 
@@ -40,18 +39,39 @@ const submit = () => form.submit({
         toast.success("Protocolo criado com Sucesso!", {
             position: 'top-right',
         });
+    },
+    onError: () => {
+        toast.error("Erro ao atualizar Protocolo!", {
+            position: 'top-right',
+        });
     }
 });
 
-const dateValidation = (date, maxDaysPast) => {
-    const selectedDate = new Date(date);
-    const currentDate = new Date();
-    const maxDateAllowed = new Date().setDate(currentDate.getDate() - maxDaysPast);
 
-    return [
-        () => selectedDate <= currentDate && selectedDate >= maxDateAllowed || `A data deve estar dentro do intervalo de ${maxDaysPast} dias no passado e até o dia atual.`,
-    ];
-};
+
+// // configuração de datas
+const isMenuOpen = ref(false);
+const formattedDate = computed(() => {
+    if (!form.date) return '';
+    const dateObj = new Date(form.date);
+    return dateObj.toLocaleDateString('pt-BR');
+});
+
+
+// watch(form.date, (newValue, oldValue) => {
+//     console.log(newValue, oldValue)
+//     isMenuOpen.value = false
+// })
+
+// const dateValidation = (date, maxDaysPast) => {
+//     const selectedDate = new Date(date);
+//     const currentDate = new Date();
+//     const maxDateAllowed = new Date().setDate(currentDate.getDate() - maxDaysPast);
+
+//     return [
+//         () => selectedDate <= currentDate && selectedDate >= maxDateAllowed || `A data deve estar dentro do intervalo de ${maxDaysPast} dias no passado e até o dia atual.`,
+//     ];
+// };
 
 // Filtros e paginação
 const search = ref('');
@@ -112,17 +132,87 @@ const deleteProtocols = () => {
     });
 }
 
-
 </script>
 
 <template>
     <AppLayout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Protocolos
+            </h2>
+        </template>
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
+
                         <v-col cols="auto" class="flex justify-center mb-5">
-                            <v-btn size="large" @click="openModal">Criar Protocolos</v-btn>
+                            <v-dialog transition="dialog-top-transition" max-width="500">
+                                <template v-slot:activator="{ props: activatorProps }">
+                                    <v-btn size="large" v-bind="activatorProps">Criar Protocolo</v-btn>
+                                </template>
+
+                                <template v-slot:default="{ isActive }">
+                                    <form @submit.prevent="submit">
+                                        <v-card title="Criar Protocolo">
+
+                                            <v-container>
+                                                <v-select label="Contribuinte" :items="peoples" item-title="name"
+                                                    item-value="id" variant="outlined" v-model="form.people_id"
+                                                    @change="form.validate('people_id')"></v-select>
+                                                <span v-if="form.invalid('people_id')" class="text-base text-red-500">
+                                                    {{ form.errors.people_id }}
+                                                </span>
+                                            </v-container>
+
+                                            <v-container>
+                                                <v-menu v-model="isMenuOpen" :close-on-content-click="false">
+                                                    <template v-slot:activator="{ props }">
+                                                        <v-text-field label="Selecione a data"
+                                                            :model-value="formattedDate" v-bind="props"
+                                                            variant="outlined"></v-text-field>
+                                                    </template>
+                                                    <v-date-picker v-model="form.date"
+                                                        :rules="[() => dateValidation(form.date, 30, 0)]"
+                                                        @change="form.validate('date')"></v-date-picker>
+                                                </v-menu>
+                                                <span v-if="form.invalid('date')" class="text-base text-red-500">
+                                                    {{ form.errors.date }}
+                                                </span>
+                                            </v-container>
+
+                                            <v-container>
+                                                <v-text-field v-model="form.term" label="Prazo em dias" type="number"
+                                                    variant="outlined" min="5" max="30"
+                                                    @change="form.validate('term')"></v-text-field>
+                                                <span v-if="form.invalid('term')" class="text-base text-red-500">
+                                                    {{ form.errors.term }}</span>
+                                            </v-container>
+
+                                            <v-container>
+                                                <v-textarea v-model="form.description" label="Descrição"
+                                                    variant="outlined"
+                                                    @change="form.validate('description')"></v-textarea>
+                                                <span v-if="form.invalid('description')" class="text-base text-red-500">
+                                                    {{ form.errors.description }}
+                                                </span>
+                                            </v-container>
+
+                                            <v-divider></v-divider>
+                                            <div class="flex">
+                                                <v-card-actions>
+                                                    <v-btn text="Cancelar" @click="isActive.value = false"></v-btn>
+                                                </v-card-actions>
+                                                <v-row>
+                                                    <v-col cols="12" class="text-right">
+                                                        <v-btn type="submit" color="primary">Salvar</v-btn>
+                                                    </v-col>
+                                                </v-row>
+                                            </div>
+                                        </v-card>
+                                    </form>
+                                </template>
+                            </v-dialog>
                         </v-col>
 
                         <v-card title="Protocolos" flat>

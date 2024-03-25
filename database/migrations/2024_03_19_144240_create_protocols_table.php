@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('people_id');
             $table->longText('description');
             $table->date('date');
-            $table->date('term');
+            $table->integer('term');
             $table->timestamps();
             $table->foreign('people_id')->references('id')->on('people')->onDelete('cascade');
         });

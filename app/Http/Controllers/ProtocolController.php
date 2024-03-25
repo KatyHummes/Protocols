@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProtocolRequest;
 use App\Models\People;
 use App\Models\Protocol;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -22,13 +23,15 @@ class ProtocolController extends Controller
 
     public function store(ProtocolRequest $request)
     {
+        $selectedDate = Carbon::parse($request->date)->format('Y-m-d');
         Protocol::create([
             'people_id' => $request->people_id,
             'description' => $request->description,
-            'date' => $request->date,
+            'date' => $selectedDate,
             'term' => $request->term,
         ]);
     }
+    
 
     public function show($id)
     {
@@ -51,7 +54,7 @@ class ProtocolController extends Controller
             'term' => $request->term,
         ]);
     }
-    
+
     public function destroy($id)
     {
         Protocol::destroy($id);
