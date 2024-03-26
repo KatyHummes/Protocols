@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\ValidCpf;
+use App\Rules\AgeRequirement;
 
 class PeopleRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class PeopleRequest extends FormRequest
         $peopleId = $this->route('id');
         return [
             'name' => ['required'],
-            'birth' => ['required'],
+            'birth' => ['required', new AgeRequirement],
             'cpf' => ['required', "unique:people,cpf,{$peopleId}", new ValidCpf()],
             'sex' => ['required'],
         ];

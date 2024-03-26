@@ -1,10 +1,10 @@
 <script setup>
-import AppLayout from '@/Layouts/AppLayout.vue';
-import Modal from '@/Components/Modal.vue';
-import { useForm } from 'laravel-precognition-vue-inertia';
 import { ref, computed, defineProps } from 'vue';
+import { useForm } from 'laravel-precognition-vue-inertia';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import Modal from '@/Components/Modal.vue';
 
 const toast = useToast();
 
@@ -25,7 +25,7 @@ const closeCreatePeopleModal = () => {
 
 const form = useForm('post', route('people.store'), {
     name: '',
-    birth: '',
+    birth: null,
     cpf: '',
     sex: '',
     city: '',
@@ -43,7 +43,21 @@ const submit = () => form.submit({
         toast.success("Pessoa criada com Sucesso!", {
             position: 'top-right',
         });
+    },
+    onError: () => {
+        closeCreatePeopleModal();
+        toast.error("Erro ao atualizar Protocolo!", {
+            position: 'top-right',
+        });
     }
+});
+
+// configuração de datas
+const isMenuOpen = ref(false);
+const formattedDate = computed(() => {
+    if (!form.birth) return '';
+    const dateObj = new Date(form.birth);
+    return dateObj.toLocaleDateString('pt-BR');
 });
 
 // Filtros e paginação
@@ -53,31 +67,31 @@ const itemsPerPage = 10;
 
 // Definindo a lista de pessoas a serem filtradas
 const filteredPeoples = computed(() => {
-  const searchTerm = search.value.toLowerCase().trim();
-  return props.peoples.filter(people => {
-    return (
-      people.name.toLowerCase().includes(searchTerm) ||
-      people.birth.toLowerCase().includes(searchTerm) ||
-      people.cpf.toLowerCase().includes(searchTerm) ||
-      people.sex.toLowerCase().includes(searchTerm)
-    );
-  });
+    const searchTerm = search.value.toLowerCase().trim();
+    return props.peoples.filter(people => {
+        return (
+            people.name.toLowerCase().includes(searchTerm) ||
+            people.birth.toLowerCase().includes(searchTerm) ||
+            people.cpf.toLowerCase().includes(searchTerm) ||
+            people.sex.toLowerCase().includes(searchTerm)
+        );
+    });
 });
 
 // Protocols a serem exibidos na página atual
 const displayedPeoples = computed(() => {
-  const start = (page.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return filteredPeoples.value.slice(start, end);
+    const start = (page.value - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredPeoples.value.slice(start, end);
 });
 
 // Número total de páginas
 const pageCount = computed(() => {
-  return Math.ceil(filteredPeoples.value.length / itemsPerPage);
+    return Math.ceil(filteredPeoples.value.length / itemsPerPage);
 });
 
 const updatePage = (newPage) => {
-  page.value = newPage;
+    page.value = newPage;
 };
 
 // Modal deletar pessoas
@@ -127,7 +141,8 @@ const deletePeople = () => {
 
                         <v-card title="Pessoas" flat>
                             <template v-slot:text>
-                                <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify" variant="outlined" hide-details single-line></v-text-field>
+                                <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
+                                    variant="outlined" hide-details single-line></v-text-field>
                             </template>
                         </v-card>
 
@@ -149,7 +164,8 @@ const deletePeople = () => {
                                     <td>{{ people.birth }}</td>
                                     <td>{{ people.cpf }}</td>
                                     <td>{{ people.sex }}</td>
-                                    <td><div class="flex gap-4">
+                                    <td>
+                                        <div class="flex gap-4">
                                             <a :href="route('people.show', people.id)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
@@ -169,7 +185,8 @@ const deletePeople = () => {
                                                         d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                 </svg>
                                             </button>
-                                        </div></td>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </v-table>
@@ -235,6 +252,19 @@ const deletePeople = () => {
                             {{ form.errors.birth }}
                         </span>
                     </div>
+                    <!-- <div>
+                        <v-menu v-model="isMenuOpen" :close-on-content-click="false">
+                            <template v-slot:activator="{ props }">
+                                <v-text-field label="Data de Nascimento:*" :model-value="formattedDate" v-bind="props"
+                                    variant="outlined"></v-text-field>
+                            </template>
+                            <v-date-picker v-model="form.birth" @change="form.validate('birth')"></v-date-picker>
+                        </v-menu>
+                        <span v-if="form.invalid('birth')" class="text-base text-red-500">
+                            {{ form.errors.birth }}
+                        </span>
+                    </div>
+                    {{ form.birth }} -->
                     <div>
                         <v-text-field label="cpf:*" v-model="form.cpf" variant="outlined" v-mask="'###.###.###-##'"
                             @change="form.validate('cpf')"></v-text-field>

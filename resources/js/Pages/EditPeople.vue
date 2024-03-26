@@ -1,4 +1,5 @@
 <script setup>
+import { ref, computed, defineProps, watch } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { useToast } from 'vue-toast-notification';
@@ -12,7 +13,7 @@ const props = defineProps({
 
 const form = useForm('put', route('people.update', props.people.id), {
     name: props.people.name,
-    birth: props.people.birth,
+    birth: new Date (props.people.birth),
     cpf: props.people.cpf,
     sex: props.people.sex,
     city: props.people.city,
@@ -40,6 +41,19 @@ const form = useForm('put', route('people.update', props.people.id), {
         },
     });
 };
+
+// configuração de datas
+const isMenuOpen = ref(false);
+const selectedDate = ref()
+const formattedDate = computed(() => {
+    if (!form.birth) return '';
+    const dateObj = new Date(form.birth);
+    return dateObj.toLocaleDateString('pt-BR');
+});
+
+watch(selectedDate, (newValue, oldValue) => {
+    isMenuOpen.value = false
+})
 </script>
 
 <template>
@@ -63,8 +77,13 @@ const form = useForm('put', route('people.update', props.people.id), {
                                 </span>
                             </div>
                             <div>
-                                <v-text-field label="Data de Nascimento:*" v-model="form.birth" type="date"
-                                    @change="form.validate('birth')" variant="outlined"></v-text-field>
+                                <v-menu v-model="isMenuOpen" :close-on-content-click="false">
+                                    <template v-slot:activator="{ props }">
+                                        <v-text-field label="Selecione a data" :model-value="formattedDate"
+                                            v-bind="props" variant="outlined"></v-text-field>
+                                    </template>
+                                    <v-date-picker v-model="form.birth" @change="form.validate('birth')"></v-date-picker>
+                                </v-menu>
                                 <span v-if="form.invalid('birth')" class="text-base text-red-500">
                                     {{ form.errors.birth }}
                                 </span>

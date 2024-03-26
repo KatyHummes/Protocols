@@ -47,31 +47,13 @@ const submit = () => form.submit({
     }
 });
 
-
-
-// // configuração de datas
+// configuração de datas
 const isMenuOpen = ref(false);
 const formattedDate = computed(() => {
     if (!form.date) return '';
     const dateObj = new Date(form.date);
     return dateObj.toLocaleDateString('pt-BR');
 });
-
-
-// watch(form.date, (newValue, oldValue) => {
-//     console.log(newValue, oldValue)
-//     isMenuOpen.value = false
-// })
-
-// const dateValidation = (date, maxDaysPast) => {
-//     const selectedDate = new Date(date);
-//     const currentDate = new Date();
-//     const maxDateAllowed = new Date().setDate(currentDate.getDate() - maxDaysPast);
-
-//     return [
-//         () => selectedDate <= currentDate && selectedDate >= maxDateAllowed || `A data deve estar dentro do intervalo de ${maxDaysPast} dias no passado e até o dia atual.`,
-//     ];
-// };
 
 // Filtros e paginação
 const search = ref('');
@@ -173,7 +155,6 @@ const deleteProtocols = () => {
                                                             variant="outlined"></v-text-field>
                                                     </template>
                                                     <v-date-picker v-model="form.date"
-                                                        :rules="[() => dateValidation(form.date, 30, 0)]"
                                                         @change="form.validate('date')"></v-date-picker>
                                                 </v-menu>
                                                 <span v-if="form.invalid('date')" class="text-base text-red-500">
@@ -286,64 +267,6 @@ const deleteProtocols = () => {
                         Excluir
                     </v-btn>
                 </div>
-            </form>
-        </div>
-    </Modal>
-
-    <!-- Inclusão de Protocolo -->
-    <Modal :show="openingModal" @close="closeModal" :max-width="'5xl'">
-        <div class="flex justify-between p-6">
-            <h3 class="font-semibold text-xl text-gray-800 leading-tight">
-                Criar Protocolo
-            </h3>
-            <v-btn @click="closeModal" type="button"
-                class="rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center">
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                    viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                </svg>
-            </v-btn>
-        </div>
-        <div class="p-6">
-            <form @submit.prevent="submit">
-                <div class="grid grid-cols-2 gap-4">
-
-                    <div>
-                        <v-text-field v-model="form.date" label="Data" type="date" variant="outlined"
-                            :rules="[() => dateValidation(form.date, 30, 0)]"
-                            @change="form.validate('date')"></v-text-field>
-                        <span v-if="form.invalid('date')" class="text-base text-red-500">{{ form.errors.date }}</span>
-                    </div>
-                    <div>
-                        <div class="border-2 border-black rounded-md">
-                            <select v-model="form.people_id" class="w-full" placeholder="Clique para Selecionar">
-                                <option v-for="people in peoples" :value="people.id">{{ people.name }}</option>
-                            </select>
-                        </div>
-                        <span v-if="form.invalid('people_id')" class="text-base text-red-500">
-                            {{ form.errors.people_id }}
-                        </span>
-                    </div>
-                    <div>
-                        <v-text-field v-model="form.term" label="Prazo" type="date" variant="outlined"
-                            :rules="[() => dateValidation(form.term, 5, 30)]"
-                            @change="form.validate('term')"></v-text-field>
-                        <span v-if="form.invalid('term')" class="text-base text-red-500">{{ form.errors.term }}</span>
-                    </div>
-                    <div>
-                        <v-textarea v-model="form.description" label="Descrição" variant="outlined"
-                            @change="form.validate('description')"></v-textarea>
-                        <span v-if="form.invalid('description')" class="text-base text-red-500">
-                            {{ form.errors.description }}
-                        </span>
-                    </div>
-                </div>
-                <v-row>
-                    <v-col cols="12" class="text-right">
-                        <v-btn type="submit" color="primary">Salvar</v-btn>
-                    </v-col>
-                </v-row>
             </form>
         </div>
     </Modal>

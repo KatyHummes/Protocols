@@ -46,11 +46,12 @@ class ProtocolController extends Controller
 
     public function update(ProtocolRequest $request, $id)
     {
+        $selectedDate = Carbon::parse($request->date)->format('Y-m-d');
         $protocol = Protocol::find($id);
         $protocol->update([
             'people_id' => $request->people_id,
             'description' => $request->description,
-            'date' => $request->date,
+            'date' => $selectedDate,
             'term' => $request->term,
         ]);
     }

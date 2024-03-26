@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PeopleRequest;
 use App\Models\People;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class PeopleController extends Controller
 {
@@ -19,9 +20,10 @@ class PeopleController extends Controller
     public function store(PeopleRequest $request)
     {
         // dd($request->all());
+        $selectedDate = Carbon::parse($request->birth)->format('Y-m-d');
         People::create([
             'name' => $request->name,
-            'birth' => $request->birth,
+            'birth' => $selectedDate,
             'cpf' => $request->cpf,
             'sex' => $request->sex,
             'city' => $request->city,
@@ -43,17 +45,19 @@ class PeopleController extends Controller
 
     public function update(PeopleRequest $request, $id)
     {
+        // dd($request->all());
+        $selectedDate = Carbon::parse($request->birth)->format('Y-m-d');
         $people = People::find($id);
         $people->update([
-            'name' => $request->input('name'),
-            'birth' => $request->input('birth'),
-            'cpf' => $request->input('cpf'),
-            'sex' => $request->input('sex'),
-            'city' => $request->input('city'),
-            'neighborhood' => $request->input('neighborhood'),
-            'street' => $request->input('street'),
-            'number' => $request->input('number'),
-            'complement' => $request->input('complement'),
+            'name' => $request->name,
+            'birth' => $selectedDate,
+            'cpf' => $request->cpf,
+            'sex' => $request->sex,
+            'city' => $request->city,
+            'neighborhood' => $request->neighborhood,
+            'street' => $request->street,
+            'number' => $request->number,
+            'complement' => $request->complement,
         ]);
     }
     public function destroy($id)
