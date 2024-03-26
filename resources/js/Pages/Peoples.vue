@@ -65,7 +65,6 @@ const search = ref('');
 const page = ref(1);
 const itemsPerPage = 10;
 
-// Definindo a lista de pessoas a serem filtradas
 const filteredPeoples = computed(() => {
     const searchTerm = search.value.toLowerCase().trim();
     return props.peoples.filter(people => {
@@ -78,20 +77,24 @@ const filteredPeoples = computed(() => {
     });
 });
 
-// Protocols a serem exibidos na página atual
 const displayedPeoples = computed(() => {
     const start = (page.value - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     return filteredPeoples.value.slice(start, end);
 });
 
-// Número total de páginas
 const pageCount = computed(() => {
     return Math.ceil(filteredPeoples.value.length / itemsPerPage);
 });
 
 const updatePage = (newPage) => {
     page.value = newPage;
+};
+
+// Função para formatar a data da tabela
+const formatDate = (dateString) => {
+  const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
 // Modal deletar pessoas
@@ -161,7 +164,7 @@ const deletePeople = () => {
                                 <tr v-for="people in displayedPeoples" :key="people.id">
                                     <td>{{ people.id }}</td>
                                     <td>{{ people.name }}</td>
-                                    <td>{{ people.birth }}</td>
+                                    <td>{{ formatDate(people.birth) }}</td>
                                     <td>{{ people.cpf }}</td>
                                     <td>{{ people.sex }}</td>
                                     <td>
