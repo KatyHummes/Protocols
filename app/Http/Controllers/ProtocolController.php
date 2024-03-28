@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProtocolRequest;
+use App\Models\DocAttach;
 use App\Models\People;
 use App\Models\Protocol;
 use Carbon\Carbon;
@@ -23,15 +24,30 @@ class ProtocolController extends Controller
 
     public function store(ProtocolRequest $request)
     {
+        // dd($request->all());
         $selectedDate = Carbon::parse($request->date)->format('Y-m-d');
-        Protocol::create([
+        $protocol = Protocol::create([
             'people_id' => $request->people_id,
             'description' => $request->description,
             'date' => $selectedDate,
             'term' => $request->term,
         ]);
+        
+        if ($protocol) {
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('public', $fileName);
+        
+                    DocAttach::create([
+                        'protocol_id' => $protocol->id,
+                        'file' => $fileName,
+                    ]);
+                }
+            }
+        }
+        
     }
-    
 
     public function show($id)
     {

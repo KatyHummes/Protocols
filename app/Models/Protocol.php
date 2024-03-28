@@ -15,6 +15,11 @@ class Protocol extends Model
         'term',
     ];
 
+    public function docattach()
+    {
+        return $this->hasMany(DocAttach::class);
+    }
+
     public function people()
     {
         return $this->belongsTo(People::class);
