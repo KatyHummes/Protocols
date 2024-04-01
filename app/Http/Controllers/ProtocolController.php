@@ -32,13 +32,13 @@ class ProtocolController extends Controller
             'date' => $selectedDate,
             'term' => $request->term,
         ]);
-        
+
         if ($protocol) {
             if ($request->hasFile('files')) {
                 foreach ($request->file('files') as $file) {
                     $fileName = time() . '_' . $file->getClientOriginalName();
                     $file->storeAs('public', $fileName);
-        
+
                     DocAttach::create([
                         'protocol_id' => $protocol->id,
                         'file' => $fileName,
@@ -46,14 +46,13 @@ class ProtocolController extends Controller
                 }
             }
         }
-        
     }
 
     public function show($id)
     {
-        $protocol = Protocol::findOrFail($id)->with('people')->first();
-        $peoples = People::get(['id', 'name']);
+        $protocol = Protocol::with('people', 'docattachs')->findOrFail($id);
         // dd($protocol);
+        $peoples = People::get(['id', 'name']);
         return Inertia::render('EditProtocol', [
             'protocol' => $protocol,
             'peoples' => $peoples,
@@ -70,8 +69,19 @@ class ProtocolController extends Controller
             'date' => $selectedDate,
             'term' => $request->term,
         ]);
-    }
 
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $file->storeAs('public', $fileName);
+
+                $protocol->docattach()->updateOrCreate(
+                    ['protocol_id' => $protocol->id],
+                    ['file' => $fileName]
+                );
+            }
+        }
+    }
     public function destroy($id)
     {
         Protocol::destroy($id);

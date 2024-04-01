@@ -28,7 +28,14 @@ const submit = () => form.submit({
         toast.success("Protocolo criado com Sucesso!", {
             position: 'top-right',
         });
-    }
+    },
+    onError: () => {
+        toast.open({
+            message: 'Erro ao criar protocolo!',
+            type: 'error',
+            position: 'top-right',
+        });
+    },
 });
 
 // configuração de datas
@@ -98,6 +105,7 @@ const deleteProtocols = () => {
     });
 }
 
+// Calcular data final
 const calculateFinalDate = (startDate, term) => {
     const startDateObj = new Date(startDate);
     const finalDateObj = new Date(startDateObj.getTime() + term * 24 * 60 * 60 * 1000);
@@ -170,7 +178,14 @@ const calculateFinalDate = (startDate, term) => {
                                                 </span>
                                             </v-container>
 
-                                            <v-file-input label="Anexar Documentos" chips multiple v-model="form.files"></v-file-input>
+                                            <v-container>
+                                                <v-file-input label="Anexar Documentos" multiple variant="outlined"
+                                                    @change="form.validate('files')"
+                                                    v-model="form.files"></v-file-input>
+                                                <span v-if="form.invalid('files')" class="text-base text-red-500">
+                                                    {{ form.errors.files }}
+                                                </span>
+                                            </v-container>
 
                                             <v-divider></v-divider>
                                             <div class="flex">

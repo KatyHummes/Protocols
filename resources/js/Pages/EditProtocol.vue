@@ -104,6 +104,15 @@ watch(selectedDate, (newValue, oldValue) => {
                                 </span>
                             </v-container>
 
+                            <h1 class="m-4">Pré Visualização dos Arquivos:</h1>
+                            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 m-4">
+                                <div v-for="docattach in protocol.docattachs"
+                                    class="mb-4 rounded-2xl border-slate-100 border-4 bg-white">
+                                    <img :src="'../storage/' + docattach.file" alt="documentos anexados"
+                                        class="rounded-2xl fixed-size-img">
+                                </div>
+                            </div>
+
                             <v-divider></v-divider>
                             <div class="flex m-4">
                                 <v-row>
@@ -120,3 +129,11 @@ watch(selectedDate, (newValue, oldValue) => {
         </div>
     </AppLayout>
 </template>
+
+<style>
+.fixed-size-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+</style>

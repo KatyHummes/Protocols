@@ -52,4 +52,4 @@ php artisan storage:link
 
 https://jetstream.laravel.com/ para a autenticação e configurações iniciais,
 https://vuetifyjs.com/en/ e https://tailwindcss.com/ para alguns componentes e estruturas do front-end,
-https://undraw.co/illustrations os svgs e o https://heroicons.com/ para os icones.
+https://undraw.co/illustrations para os svgs e o https://heroicons.com/ para os icones.
