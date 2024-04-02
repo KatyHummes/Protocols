@@ -33,9 +33,6 @@ const submit = () => {
     <Head title="Log in" />
 
     <AuthenticationCard>
-        <template #logo>
-            <AuthenticationCardLogo />
-        </template>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
@@ -43,7 +40,7 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" value="Email"  class="text-white"/>
                 <TextInput
                     id="email"
                     v-model="form.email"
@@ -57,7 +54,7 @@ const submit = () => {
             </div>
 
             <div class="mt-4">
-                <InputLabel for="password" value="Senha" />
+                <InputLabel for="password" value="Senha"  class="text-white" />
                 <TextInput
                     id="password"
                     v-model="form.password"
@@ -70,18 +67,18 @@ const submit = () => {
             </div>
 
             <div class="block mt-4">
-                <label class="flex items-center">
+                <label class="flex items-center text-white">
                     <Checkbox v-model:checked="form.remember" name="remember" />
-                    <span class="ms-2 text-sm text-gray-600">Lembre de mim</span>
+                    <span class="ms-2 text-sm text-white">Lembre de mim</span>
                 </label>
             </div>
 
             <div class="flex items-center justify-between mt-4">
-                <Link v-if="canResetPassword" :href="route('register')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <Link v-if="canResetPassword" :href="route('register')" class="underline text-sm text-white hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Registrar-se
                 </Link>
 
-                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-white hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Esqueceu sua senha?
                 </Link>
 

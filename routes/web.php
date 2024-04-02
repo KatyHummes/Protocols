@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PeopleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -12,6 +13,9 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
     ]);
 });
+
+// Autenticação:
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 Route::middleware([
     'auth:sanctum',
@@ -32,4 +36,5 @@ Route::middleware([
     Route::get('/editar-protocolo/{id}', [ProtocolController::class, 'show'])->name('protocol.show');
     Route::put('/editar-protocolo/{id}', [ProtocolController::class, 'update'])->name('protocol.update')->middleware([HandlePrecognitiveRequests::class]);
     Route::delete('/deletar-protocolo/{id}', [ProtocolController::class, 'destroy'])->name('protocol.destroy');
+
 });
