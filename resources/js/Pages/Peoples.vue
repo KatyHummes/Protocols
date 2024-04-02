@@ -153,7 +153,7 @@ const deletePeople = () => {
                             <thead>
                                 <tr>
                                     <th class="text-left">Id</th>
-                                    <th class="text-left">Name</th>
+                                    <th class="text-left">Nome</th>
                                     <th class="text-left">Data de Nascimento</th>
                                     <th class="text-left">CPF</th>
                                     <th class="text-left">Sexo</th>

@@ -81,7 +81,7 @@ const submit = () => {
 
             <div class="mt-4">
                 <InputLabel for="ativo" value="Ativo" class="text-white" />
-                <select id="ativo" v-model="form.ativo" class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm" required autofocus >
+                <select id="ativo" v-model="form.ativo" class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm" disabled autofocus >
                     <option value="S">Ativo</option>
                     <option value="N">Desativado</option>
                 </select>

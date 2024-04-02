@@ -24,4 +24,18 @@ class AuthController extends Controller
         ]);
         Auth::login($user);
     }
+
+    public function index()
+    {
+        return Inertia::render('UsersIndex', [
+            'users' => User::all(),
+        ]);
+    }
+
+    public function show(User $user)
+    {
+        return Inertia::render('UsersShow', [
+            'user' => $user,
+        ]);
+    }
 }

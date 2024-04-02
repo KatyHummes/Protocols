@@ -24,11 +24,8 @@ const submit = () => {
     <Head title="Forgot Password" />
 
     <AuthenticationCard>
-        <template #logo>
-            <AuthenticationCardLogo />
-        </template>
-
-        <div class="mb-4 text-sm text-gray-600">
+        
+        <div class="mb-4 text-sm text-white">
         Esqueceu sua senha? Sem problemas. Basta nos informar seu endereço de e-mail e enviaremos por e-mail um link de redefinição de senha que permitirá que você escolha uma nova.        </div>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
@@ -37,7 +34,7 @@ const submit = () => {
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="email" value="Email" />
+                <InputLabel for="email" value="Email"  class="text-white"/>
                 <TextInput
                     id="email"
                     v-model="form.email"
