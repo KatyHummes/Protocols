@@ -55,6 +55,9 @@ const logout = () => {
                                 <NavLink :href="route('protocols.index')" :active="route().current('protocols.index')">
                                     Protocols
                                 </NavLink>
+                                <NavLink :href="route('users.index')" :active="route().current('users.index')">
+                                    Úsuarios
+                                </NavLink>
                             </div>
                         </div>
 
@@ -128,10 +131,6 @@ const logout = () => {
                                     </template>
                                 </Dropdown>
                             </div>
-
-                            <NavLink :href="route('users.index')" :active="route().current('users.index')">
-                                Úsuarios
-                            </NavLink>
 
                             <!-- Settings Dropdown -->
                             <div class="ms-3 relative">

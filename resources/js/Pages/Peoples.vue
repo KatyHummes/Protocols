@@ -206,9 +206,8 @@ const deletePeople = () => {
     <Modal :show="showDelete" @close="closeDeleteModal">
         <div class="p-4">
             <form @submit.prevent="deletePeople()">
-                <h2 class="flex items-center justify-center border-b-4 text-xl p-4 m-4 font-bold">Tem certeza que deseja
-                    excluir esta
-                    Pessoa?
+                <h2 class="flex items-center justify-center border-b-4 text-xl p-4 m-4 font-bold">
+                    Tem certeza que deseja excluir esta Pessoa?
                 </h2>
                 <div class="flex justify-between">
                     <v-btn type="button" @click="closeDeleteModal">
