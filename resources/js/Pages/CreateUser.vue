@@ -8,7 +8,8 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 
-const form = useForm('post', route('register'), {
+
+const form = useForm('post', route('users.register'), {
     name: '',
     email: '',
     password: '',
@@ -19,49 +20,59 @@ const form = useForm('post', route('register'), {
     active: 'S',
 });
 
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-    });
-};
+const submit = () => form.submit({
+    preserveScroll: true,
+    onSuccess: () => {
+        form.reset();
+        // toast.success("Pessoa criada com Sucesso!", {
+        //     position: 'top-right',
+        // });
+    },
+    onError: () => {
+        // toast.error("Erro ao atualizar Protocolo!", {
+        //     position: 'top-right',
+        // });
+    }
+});
+
 </script>
 
 <template>
 
-    <Head title="Register" />
-
+    <Head />
     <AuthenticationCard>
 
         <form @submit.prevent="submit">
             <div>
                 <InputLabel for="name" value="Nome" class="text-white" />
-                <TextInput id="name" v-model="form.name" type="text" class="mt-1 block w-full" required autofocus
+                <TextInput id="name" v-model="form.name" type="text" class="mt-1 block w-full" autofocus
                     autocomplete="name" />
                 <InputError class="mt-2" :message="form.errors.name" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="email" value="Email" class="text-white" />
-                <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full" required
+                <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full"
                     autocomplete="username" />
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
+                <!-- {{ $page.props.auth.user. }} -->
                 <InputLabel for="type" value="Perfil" class="text-white" />
-                <select v-model="form.type" class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm">
+                <select v-model="form.type"
+                    class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm">
                     <option value="">selecione</option>
                     <option value="T" v-if="$page.props.auth.user.type === 'T'">Administrador da TI</option>
                     <option value="S" v-if="$page.props.auth.user.type === 'T'">Administrador do sistema</option>
-                    <option value="A" v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
-                        Atendente</option>
+                    <option value="A" v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">Atendente</option>
                 </select>
                 <InputError class="mt-2" :message="form.errors.type" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="cpf" value="CPF" class="text-white" />
-                <TextInput id="cpf" v-model="form.cpf" type="text" class="mt-1 block w-full" required autofocus
+                <TextInput id="cpf" v-model="form.cpf" type="text" class="mt-1 block w-full" autofocus
                     v-mask="'###.###.###-##'" autocomplete="cpf" @change="form.validate('cpf')" />
                 <span v-if="form.invalid('description')" class="text-base text-red-500">
                     {{ form.errors.description }}
@@ -71,7 +82,7 @@ const submit = () => {
 
             <div class="mt-4">
                 <InputLabel for="password" value="Senha" class="text-white" />
-                <TextInput id="password" v-model="form.password" type="password" class="mt-1 block w-full" required
+                <TextInput id="password" v-model="form.password" type="password" class="mt-1 block w-full"
                     autocomplete="new-password" />
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
@@ -79,7 +90,7 @@ const submit = () => {
             <div class="mt-4">
                 <InputLabel for="password_confirmation" value="Confirme a Senha" class="text-white" />
                 <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
-                    class="mt-1 block w-full" required autocomplete="new-password" />
+                    class="mt-1 block w-full" autocomplete="new-password" />
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
@@ -95,7 +106,7 @@ const submit = () => {
             <div v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature" class="mt-4">
                 <InputLabel for="terms">
                     <div class="flex items-center">
-                        <Checkbox id="terms" v-model:checked="form.terms" name="terms" required />
+                        <Checkbox id="terms" v-model:checked="form.terms" name="terms" />
 
                         <div class="ms-2 text-white">
                             Estou de acordo com <a target="_blank" :href="route('terms.show')"
@@ -110,11 +121,7 @@ const submit = () => {
             </div>
 
             <div class="flex items-center justify-between mt-4 ">
-                <Link :href="route('login')"
-                    class="text-white underline text-sm hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Já registrado?
-                </Link>
-
+                <Link :href="route('users.index')" class="m-4 text-white text">Voltar</Link>
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Registrar
                 </PrimaryButton>

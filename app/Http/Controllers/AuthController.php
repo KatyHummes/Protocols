@@ -11,18 +11,25 @@ use Inertia\Inertia;
 
 class AuthController extends Controller
 {
+    public function create()
+    {
+        $userType = auth()->user()->type;
+        if ($userType === 'A') {
+            return redirect()->back();
+        } 
+        return Inertia::render('CreateUser');
+    }
+
     public function register(AuthRequest $request)
     {
-        $request->validated();
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'type' => $request->type,
             'cpf' => $request->cpf,
-            'ativo' === 'S'
+            'active' === 'S'
         ]);
-        Auth::login($user);
     }
 
     public function index()
@@ -36,6 +43,19 @@ class AuthController extends Controller
     {
         return Inertia::render('UsersShow', [
             'user' => $user,
+        ]);
+    }
+
+    public function update(User $user, AuthRequest $request)
+    {
+        $request->validated();
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'type' => $request->type,
+            'cpf' => $request->cpf,
+            'active' === 'S'
         ]);
     }
 }
