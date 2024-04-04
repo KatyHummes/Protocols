@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, defineProps } from 'vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 const props = defineProps({
@@ -16,7 +16,6 @@ const filteredusers = computed(() => {
     const searchTerm = search.value.toLowerCase().trim();
     return props.users.filter(user => {
         return (
-            user.active.toLowerCase().includes(searchTerm) ||
             user.name.toLowerCase().includes(searchTerm) ||
             user.cpf.toLowerCase().includes(searchTerm) ||
             user.type.toLowerCase().includes(searchTerm)
@@ -51,14 +50,22 @@ const translateType = (type) => {
     }
 };
 
+const translateActive = (active) => {
+    switch (active) {
+        case 'S':
+            return 'Ativo';
+        case 'N':
+            return 'Desativado';
+    }
+};
 </script>
 
 <template>
     <AppLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class=" flex justify-between items-center font-semibold text-xl text-gray-800 leading-tight">
                 Usuários
-                <Link v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'" :href="route('create')">Novo Usuário</Link>
+                <Link v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'" :href="route('create')" class="text-base border-2 border-gray-400 rounded-lg mx-4 p-4 hover:bg-sky-500 hover:text-white">Novo Usuário</Link>
             </h2>
         </template>
         <v-container>
@@ -80,12 +87,12 @@ const translateType = (type) => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="user in users" :key="user.id">
+                    <tr v-for="user in displayedusers" :key="user.id">
                         <td>{{ user.id }}</td>
                         <td>{{ user.name }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ translateType(user.type) }}</td>
-                        <td>{{ user.active }}</td>
+                        <td>{{ translateActive(user.active) }}</td>
                         <td>
                             <div class="flex gap-4">
                                 <Link :href="route('users.show', user.id)">

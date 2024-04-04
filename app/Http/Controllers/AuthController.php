@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
+use App\Http\Requests\UserEditRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,10 +14,14 @@ class AuthController extends Controller
 {
     public function create()
     {
+        $userActive = auth()->user()->active;
         $userType = auth()->user()->type;
         if ($userType === 'A') {
             return redirect()->back();
         } 
+        if ($userActive === 'N') {
+            return redirect()->back();
+        }
         return Inertia::render('CreateUser');
     }
 
@@ -46,7 +51,7 @@ class AuthController extends Controller
         ]);
     }
 
-    public function update(User $user, AuthRequest $request)
+    public function update(User $user, UserEditRequest $request)
     {
         $request->validated();
         $user->update([

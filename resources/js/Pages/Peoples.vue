@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, defineProps } from 'vue';
+import { Link } from '@inertiajs/vue3';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
@@ -169,7 +170,7 @@ const deletePeople = () => {
                                     <td>{{ people.sex }}</td>
                                     <td>
                                         <div class="flex gap-4">
-                                            <a :href="route('people.show', people.id)">
+                                            <Link :href="route('people.show', people.id)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                     stroke-width="1.5" stroke="currentColor"
                                                     class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">
@@ -178,7 +179,7 @@ const deletePeople = () => {
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                                 </svg>
-                                            </a>
+                                            </Link>
 
                                             <button size="small" @click="openDeleteModal(people.id)">
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

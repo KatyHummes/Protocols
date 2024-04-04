@@ -1,4 +1,5 @@
 <script setup>
+import { Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { useToast } from 'vue-toast-notification';
@@ -7,15 +8,13 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import SelectInput from '@/Components/SelectInput.vue';
-import LinkButton from '@/Components/LinkButton.vue';
 
 const toast = useToast();
 const props = defineProps({
     user: Object,
 });
 
-const form = useForm('put', route('users.update', props.user.id), {
+const form = useForm('post', route('users.update', props.user.id), {
     name: props.user.name,
     email: props.user.email,
     type: props.user.type,
@@ -72,8 +71,16 @@ const submit = () => {
 
                             <div class="mt-4">
                                 <InputLabel for="type" value="Perfil" class="text-gray-900" />
-                                <SelectInput id="type" v-model="form.type" type="select"
-                                    class="mt-1 block w-full bg-slate-50" required autofocus />
+                                <select v-model="form.type" class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm">
+                                    <option value="">selecione</option>
+                                    <option value="T" v-if="$page.props.auth.user.type === 'T'">Administrador da TI
+                                    </option>
+                                    <option value="S" v-if="$page.props.auth.user.type === 'T'">Administrador do sistema
+                                    </option>
+                                    <option value="A"
+                                        v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
+                                        Atendente</option>
+                                </select>
                                 <InputError class="mt-2" :message="form.errors.type" />
                             </div>
 
@@ -97,7 +104,7 @@ const submit = () => {
                             </div>
 
                             <div class="flex items-center justify-between mt-4 ">
-                                <LinkButton :href="route('users.index')" class="m-4 text-cyan-600">Voltar</LinkButton>
+                                <Link :href="route('users.index')" class="m-4 text-cyan-600">Voltar</Link>
                                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }"
                                     :disabled="form.processing">
                                     Salvar

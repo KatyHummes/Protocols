@@ -20,6 +20,10 @@ class CreateNewUser implements CreatesNewUsers
      */
     public function create(array $input): User
     {
+        $userActive = auth()->user()->active;
+        if ($userActive === 'N') {
+            return redirect()->back();
+        }
         // dd($input);
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],

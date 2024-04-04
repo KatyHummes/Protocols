@@ -74,10 +74,6 @@ const submit = () => {
             </div>
 
             <div class="flex items-center justify-between mt-4">
-                <Link v-if="canResetPassword" :href="route('register')" class="underline text-sm text-white hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Registrar-se
-                </Link>
-
                 <Link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-white hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Esqueceu sua senha?
                 </Link>

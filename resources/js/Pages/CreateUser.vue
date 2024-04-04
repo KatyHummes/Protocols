@@ -7,7 +7,10 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import { useToast } from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
+const toast = useToast();
 
 const form = useForm('post', route('users.register'), {
     name: '',
@@ -24,14 +27,14 @@ const submit = () => form.submit({
     preserveScroll: true,
     onSuccess: () => {
         form.reset();
-        // toast.success("Pessoa criada com Sucesso!", {
-        //     position: 'top-right',
-        // });
+        toast.success("Pessoa criada com Sucesso!", {
+            position: 'top-right',
+        });
     },
     onError: () => {
-        // toast.error("Erro ao atualizar Protocolo!", {
-        //     position: 'top-right',
-        // });
+        toast.error("Erro ao atualizar Protocolo!", {
+            position: 'top-right',
+        });
     }
 });
 
