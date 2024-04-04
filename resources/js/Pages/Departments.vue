@@ -79,7 +79,6 @@ const submit = () => form.submit({
                             <template v-slot:default="{ isActive }">
                                 <form @submit.prevent="submit">
                                     <v-card title="Criar Departamento">
-
                                         <v-container>
                                             <v-text-field label="Nome:*" v-model="form.name" variant="outlined"
                                                 @change="form.validate('name')"></v-text-field>
@@ -126,7 +125,7 @@ const submit = () => form.submit({
                                 <td>{{ department.name }}</td>
                                 <td>
                                     <div class="flex gap-4">
-                                        <!-- <Link :href="route('department.show', department.id)">
+                                        <Link :href="route('departaments.show', department.id)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
                                             class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">
@@ -135,7 +134,7 @@ const submit = () => form.submit({
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                                         </svg>
-                                        </Link> -->
+                                        </Link>
                                     </div>
                                 </td>
                             </tr>

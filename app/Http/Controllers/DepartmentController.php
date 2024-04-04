@@ -29,4 +29,24 @@ class DepartmentController extends Controller
             'name' => $request->name,
         ]);
     }
+
+    public function show($id)
+    {
+        $department = Department::find($id);
+        return Inertia::render('EditDepartment', [
+            'department' => $department
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        $department = Department::find($id);
+        $department->update([
+            'name' => $request->name,
+        ]);
+    }
 }

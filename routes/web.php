@@ -50,5 +50,7 @@ Route::middleware([
     Route::prefix('/Departamentos')->name('departaments.')->group(function() {
         Route::get('/', [DepartmentController::class, 'index'])->name('index');
         Route::post('/', [DepartmentController::class, 'store'])->name('store')->middleware([HandlePrecognitiveRequests::class]);
+        Route::get('/{department}', [DepartmentController::class, 'show'])->name('show');
+        Route::put('/{department}', [DepartmentController::class, 'update'])->name('update')->middleware([HandlePrecognitiveRequests::class]);
     });
 });

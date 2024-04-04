@@ -1,4 +1,5 @@
 <script setup>
+import { Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { ref, computed, defineProps, watch } from 'vue';
@@ -114,13 +115,13 @@ watch(selectedDate, (newValue, oldValue) => {
                             </div>
 
                             <v-divider></v-divider>
-                            <div class="flex m-4">
-                                <v-row>
-                                    <v-col cols="12" class="text-right">
-                                        <v-btn type="submit" color="primary">Salvar</v-btn>
-                                    </v-col>
-                                </v-row>
-                            </div>
+                                <div class="flex justify-between items-center">
+                                    <Link :href="route('protocols.index')"
+                                        class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">
+                                    Voltar</Link>
+
+                                    <v-btn class="m-4" type="submit" color="primary">Salvar</v-btn>
+                                </div>
                         </v-card>
 
                     </form>

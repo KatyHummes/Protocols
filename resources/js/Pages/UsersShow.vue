@@ -105,7 +105,7 @@ const submit = () => {
                             </div>
 
                             <div class="flex items-center justify-between mt-4 ">
-                                <Link :href="route('users.index')" class="m-4 text-cyan-600">Voltar</Link>
+                                <Link :href="route('users.index')" class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">Voltar</Link>
                                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }"
                                     :disabled="form.processing">
                                     Salvar
