@@ -47,7 +47,7 @@ const submit = () => form.submit({
     },
     onError: () => {
         closeCreatePeopleModal();
-        toast.error("Erro ao atualizar Protocolo!", {
+        toast.error("Erro ao criar Pessoa!", {
             position: 'top-right',
         });
     }

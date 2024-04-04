@@ -37,6 +37,7 @@ const submit = () => {
             toast.open({
                 message: 'Erro ao atualizar usuário!',
                 type: 'error',
+                position: 'top-right',
             });
         },
     });
