@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -32,9 +33,14 @@ class DepartmentController extends Controller
 
     public function show($id)
     {
+        $userType = auth()->user()->type;
+        if ($userType === 'A') {
+            return redirect()->back();
+        } 
         $department = Department::find($id);
         return Inertia::render('EditDepartment', [
-            'department' => $department
+            'department' => $department,
+            'users' => User::get(['id', 'name'])
         ]);
     }
 

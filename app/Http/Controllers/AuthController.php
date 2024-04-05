@@ -39,6 +39,10 @@ class AuthController extends Controller
 
     public function index()
     {
+        $userType = auth()->user()->type;
+        if ($userType === 'A') {
+            return redirect()->back();
+        } 
         return Inertia::render('UsersIndex', [
             'users' => User::all(),
         ]);
@@ -46,6 +50,14 @@ class AuthController extends Controller
 
     public function show(User $user)
     {
+        $userActive = auth()->user()->active;
+        $userType = auth()->user()->type;
+        if ($userActive === 'N') {
+            return redirect()->back();
+        }
+        if ($userType === 'A') {
+            return redirect()->back();
+        } 
         return Inertia::render('UsersShow', [
             'user' => $user,
         ]);
