@@ -42,17 +42,49 @@ const formAccess = useForm('post', route('departments.access', props.department.
     user_id: null,
 });
 
-const submitAccess = () => formAccess.submit({
-    preserveScroll: true,
-    onSuccess: () => {
-        formAccess.reset();
+// const submitAccess = () => formAccess.submit({
+//     preserveScroll: true,
+//     onSuccess: () => {
+//         formAccess.reset();
+//         toast.open({
+//             message: 'Acesso liberado com sucesso!',
+//             type: 'success',
+//             position: 'top-right',
+//         });
+//     },
+// });
+
+const submitAccess = () => {
+    // Verifica se o user_id está definido
+    if (!formAccess.data.user_id) {
         toast.open({
-            message: 'Acesso liberado com sucesso!',
-            type: 'success',
+            message: 'Selecione um usuário para de liberar o acesso ou Usuário já possui acesso!',
+            type: 'error',
             position: 'top-right',
         });
-    },
-});
+        return;
+    }
+
+    // Se o user_id estiver definido, envia a solicitação
+    formAccess.submit({
+        preserveScroll: true,
+        onSuccess: () => {
+            formAccess.reset();
+            toast.open({
+                message: 'Acesso liberado com sucesso!',
+                type: 'success',
+                position: 'top-right',
+            });
+        },
+        onError: (error) => {
+            toast.open({
+                message: error.response.data.message,
+                type: 'error',
+                position: 'top-right',
+            });
+        }
+    });
+};
 
 // Modal para confirmar a remoção de um acesso
 const accessId = ref()
@@ -138,7 +170,6 @@ const formatDate = (dateString) => {
                     <v-divider></v-divider>
                     <v-container>
                         <h1>Usuários com acesso:</h1>
-
                         <div v-for="access in accesses" :key="access.id" cols="12" md="6" ref="updateKey">
                             <v-card class="m-4">
                                 <div class="flex justify-between m-4">
@@ -152,7 +183,6 @@ const formatDate = (dateString) => {
                                 </div>
                             </v-card>
                         </div>
-
                     </v-container>
                 </v-card>
                 <form @submit.prevent="submit">
