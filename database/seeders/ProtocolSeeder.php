@@ -16,12 +16,14 @@ class ProtocolSeeder extends Seeder
     {
         $faker = Faker::create();
         $userIds = DB::table('people')->pluck('id')->toArray();
+        $departmentIds = DB::table('departments')->pluck('id')->toArray();
 
         foreach (range(1, 200) as $index) {
 
             $timestamps = $faker->date();
             
             DB::table('protocols')->insert([
+                'department_id' => $faker->randomElement($departmentIds),
                 'people_id' => $faker->randomElement($userIds),
                 'description' => $faker->text,
                 'date' => $faker->date('Y-m-d'),
