@@ -47,10 +47,12 @@ Route::middleware([
     });
 
     // Departamentos:
-    Route::prefix('/Departamentos')->name('departaments.')->group(function() {
+    Route::prefix('/departamentos')->name('departments.')->group(function () {
         Route::get('/', [DepartmentController::class, 'index'])->name('index');
         Route::post('/', [DepartmentController::class, 'store'])->name('store')->middleware([HandlePrecognitiveRequests::class]);
-        Route::get('/{department}', [DepartmentController::class, 'show'])->name('show');
-        Route::put('/{department}', [DepartmentController::class, 'update'])->name('update')->middleware([HandlePrecognitiveRequests::class]);
+        Route::get('/{id}', [DepartmentController::class, 'show'])->name('show');
+        Route::put('/{id}', [DepartmentController::class, 'update'])->name('update')->middleware([HandlePrecognitiveRequests::class]);
+        Route::post('/access/{id}', [DepartmentController::class, 'access'])->name('access')->middleware([HandlePrecognitiveRequests::class]);
     });
+    Route::post('access-destroy/{id}', [DepartmentController::class, 'destroy'])->name('access.destroy');
 });

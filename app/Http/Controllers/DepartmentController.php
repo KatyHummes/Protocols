@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Access;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -37,10 +38,14 @@ class DepartmentController extends Controller
         if ($userType === 'A') {
             return redirect()->back();
         } 
+        $accesses = Access::with(['user' => function ($query) {
+            $query->select('id', 'name');
+        }])->where('department_id', $id)->get();
         $department = Department::find($id);
         return Inertia::render('EditDepartment', [
+            'users' => User::get(['id', 'name']),
             'department' => $department,
-            'users' => User::get(['id', 'name'])
+            'accesses' => $accesses
         ]);
     }
 
@@ -54,5 +59,21 @@ class DepartmentController extends Controller
         $department->update([
             'name' => $request->name,
         ]);
+    }
+
+    public function access(Request $request, $id)
+    {
+        // dd($request->all(), $id);
+
+        Access::create([
+            'user_id' => $request->user_id,
+            'department_id' => $id,
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $access = Access::find($id);
+        $access->delete();
     }
 }

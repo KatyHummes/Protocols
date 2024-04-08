@@ -65,4 +65,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class, 'access', 'user_id', 'department_id');
+    }
 }
