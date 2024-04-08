@@ -40,7 +40,7 @@ const updatePage = (newPage) => {
 
 // inclusão de Departamento
 const toast = useToast();
-const form = useForm('post', route('departaments.store'), {
+const form = useForm('post', route('departments.store'), {
     name: '',
 });
 
@@ -66,7 +66,7 @@ const submit = () => form.submit({
         <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8">
             <v-card>
                 <div class="bg-purple-100 flex justify-between items-center p-4">
-                        <v-tab value="one">Departamentos</v-tab>
+                    <v-tab value="one">Departamentos</v-tab>
                     <v-dialog transition="dialog-top-transition" max-width="500">
                         <template v-slot:activator="{ props: activatorProps }">
                             <v-btn size="large" v-bind="activatorProps"
@@ -124,7 +124,7 @@ const submit = () => form.submit({
                                     <td>{{ department.name }}</td>
                                     <td>
                                         <div class="flex gap-4">
-                                            <Link :href="route('departaments.show', department.id)">
+                                            <Link :href="route('departments.show', department.id)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor"
                                                 class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">

@@ -55,10 +55,13 @@ const logout = () => {
                                 <NavLink :href="route('protocols.index')" :active="route().current('protocols.index')">
                                     Protocols
                                 </NavLink>
-                                <NavLink :href="route('departaments.index')" :active="route().current('departaments.index')" v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
+                                <NavLink :href="route('departments.index')"
+                                    :active="route().current('departments.index')"
+                                    v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
                                     Departamentos
                                 </NavLink>
-                                <NavLink :href="route('users.index')" :active="route().current('users.index')"  v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
+                                <NavLink :href="route('users.index')" :active="route().current('users.index')"
+                                    v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
                                     Úsuarios
                                 </NavLink>
                             </div>
