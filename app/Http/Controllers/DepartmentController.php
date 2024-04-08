@@ -69,12 +69,10 @@ class DepartmentController extends Controller
         $existingAccess = Access::where('user_id', $request->user_id)
             ->where('department_id', $id)
             ->exists();
-
         // Se já existir, retorna para a mesma página com a mensagem de erro
         if ($existingAccess) {
             return redirect()->back();
         }
-
         // Caso contrário, cria o novo acesso
         Access::create([
             'user_id' => $request->user_id,

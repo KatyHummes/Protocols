@@ -9,6 +9,7 @@ class Protocol extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'department_id', 
         'people_id',
         'description',
         'date',
@@ -23,5 +24,10 @@ class Protocol extends Model
     public function people()
     {
         return $this->belongsTo(People::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

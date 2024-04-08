@@ -12,6 +12,7 @@ const toast = useToast();
 const props = defineProps({
     peoples: Array,
     protocols: Array,
+    departments: Array,
 });
 
 const form = useForm('post', route('protocol.store'), {
@@ -19,6 +20,7 @@ const form = useForm('post', route('protocol.store'), {
     term: '',
     date: null,
     people_id: null,
+    department_id: null,
     files: [],
 });
 
@@ -136,6 +138,15 @@ const calculateFinalDate = (startDate, term) => {
                                 <template v-slot:default="{ isActive }">
                                     <form @submit.prevent="submit">
                                         <v-card title="Criar Protocolo">
+
+                                            <v-container>
+                                                <v-select label="Departamento" :items="departments" item-title="name"
+                                                    item-value="id" variant="outlined" v-model="form.department_id"
+                                                    @change="form.validate('department_id')"></v-select>
+                                                <span v-if="form.invalid('department_id')" class="text-base text-red-500">
+                                                    {{ form.errors.department_id }}
+                                                </span>
+                                            </v-container>
 
                                             <v-container>
                                                 <v-select label="Contribuinte" :items="peoples" item-title="name"

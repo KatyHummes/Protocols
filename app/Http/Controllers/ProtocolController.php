@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProtocolRequest;
+use App\Models\Department;
 use App\Models\DocAttach;
 use App\Models\People;
 use App\Models\Protocol;
@@ -10,15 +11,18 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+// Criar protocolos
 class ProtocolController extends Controller
 {
     public function index()
     {
+        $departments = Department::get(['id', 'name']);
         $peoples = People::get(['id', 'name']);
         $protocols = Protocol::with('people')->get();
         return Inertia::render('Protocols', [
             'protocols' => $protocols,
             'peoples' => $peoples,
+            'departments' => $departments,
         ]);
     }
 
@@ -27,6 +31,7 @@ class ProtocolController extends Controller
         // dd($request->all());
         $selectedDate = Carbon::parse($request->date)->format('Y-m-d');
         $protocol = Protocol::create([
+            'department_id' => $request->department_id,
             'people_id' => $request->people_id,
             'description' => $request->description,
             'date' => $selectedDate,
@@ -48,13 +53,15 @@ class ProtocolController extends Controller
         }
     }
 
+    // Editar protocolos
     public function show($id)
     {
         $protocol = Protocol::with('people', 'docattachs')->findOrFail($id);
-        // dd($protocol);
+        $departments = Department::get(['id', 'name']);
         $peoples = People::get(['id', 'name']);
         return Inertia::render('EditProtocol', [
             'protocol' => $protocol,
+            'departments' => $departments,
             'peoples' => $peoples,
         ]);
     }
@@ -64,6 +71,7 @@ class ProtocolController extends Controller
         $selectedDate = Carbon::parse($request->date)->format('Y-m-d');
         $protocol = Protocol::find($id);
         $protocol->update([
+            'department_id' => $request->department_id,
             'people_id' => $request->people_id,
             'description' => $request->description,
             'date' => $selectedDate,
@@ -82,6 +90,8 @@ class ProtocolController extends Controller
             }
         }
     }
+
+    // Excluir protocolos
     public function destroy($id)
     {
         Protocol::destroy($id);

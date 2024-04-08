@@ -11,12 +11,14 @@ const toast = useToast();
 const props = defineProps({
     protocol: Object,
     peoples: Array,
+    departments: Array,
 });
 
 const form = useForm('put', route('protocol.update', props.protocol.id), {
     id: props.protocol.id,
     date: new Date(props.protocol.date),
     people_id: props.protocol.people_id,
+    department_id: props.protocol.department_id,
     term: props.protocol.term,
     description: props.protocol.description,
 });
@@ -69,6 +71,15 @@ watch(selectedDate, (newValue, oldValue) => {
                     <form @submit.prevent="submit">
                         <v-card>
                             <v-container>
+                                <v-select label="Departamento" :items="departments" item-title="name" item-value="id"
+                                    variant="outlined" v-model="form.department_id"
+                                    @change="form.validate('department_id')"></v-select>
+                                <span v-if="form.invalid('department_id')" class="text-base text-red-500">
+                                    {{ form.errors.department_id }}
+                                </span>
+                            </v-container>
+
+                            <v-container>
                                 <v-select label="Contribuinte" :items="peoples" item-title="name" item-value="id"
                                     variant="outlined" v-model="form.people_id"
                                     @change="form.validate('people_id')"></v-select>
@@ -115,13 +126,13 @@ watch(selectedDate, (newValue, oldValue) => {
                             </div>
 
                             <v-divider></v-divider>
-                                <div class="flex justify-between items-center">
-                                    <Link :href="route('protocols.index')"
-                                        class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">
-                                    Voltar</Link>
+                            <div class="flex justify-between items-center">
+                                <Link :href="route('protocols.index')"
+                                    class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">
+                                Voltar</Link>
 
-                                    <v-btn class="m-4" type="submit" color="primary">Salvar</v-btn>
-                                </div>
+                                <v-btn class="m-4" type="submit" color="primary">Salvar</v-btn>
+                            </div>
                         </v-card>
 
                     </form>
