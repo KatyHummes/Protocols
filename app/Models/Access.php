@@ -14,6 +14,8 @@ class Access extends Model
         'department_id',
     ];
 
+    
+
     public function user()
     {
         return $this->belongsTo(User::class);

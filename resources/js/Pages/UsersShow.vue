@@ -22,25 +22,31 @@ const form = useForm('post', route('users.update', props.user.id), {
     active: props.user.active,
 });
 
-const submit = () => {
-    form.put(route('users.update', props.user.id), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-            toast.open({
-                message: 'Usuário atualizado com sucesso!',
-                type: 'success',
-                position: 'top-right',
-            });
-        },
-        onError: () => {
-            toast.open({
-                message: 'Erro ao atualizar usuário!',
-                type: 'error',
-                position: 'top-right',
-            });
-        },
-    });
+const submit = () => form.submit({
+    preserveScroll: true,
+    onSuccess: () => {
+        toast.open({
+            message: 'Usuário atualizado com sucesso!',
+            type: 'success',
+            position: 'top-right',
+        });
+    },
+    onError: () => {
+        toast.open({
+            message: 'Erro ao atualizar usuário!',
+            type: 'error',
+            position: 'top-right',
+        });
+    },
+});
+
+const translateActive = (active) => {
+    switch (active) {
+        case 'S':
+            return 'Ativo';
+        case 'N':
+            return 'Desativado';
+    }
 };
 </script>
 
@@ -99,13 +105,16 @@ const submit = () => {
                                 <InputLabel for="active" value="active" class="text-gray-900" />
                                 <select id="active" v-model="form.active"
                                     class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm" autofocus>
+                                    <option selected :value="form.active">{{ translateActive(form.active) }}</option>
                                     <option value="S">Ativo</option>
                                     <option value="N">Desativado</option>
                                 </select>
                             </div>
 
                             <div class="flex items-center justify-between mt-4 ">
-                                <Link :href="route('users.index')" class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">Voltar</Link>
+                                <Link :href="route('users.index')"
+                                    class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">
+                                Voltar</Link>
                                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }"
                                     :disabled="form.processing">
                                     Salvar

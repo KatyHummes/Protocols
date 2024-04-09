@@ -63,16 +63,17 @@ class AuthController extends Controller
         ]);
     }
 
-    public function update(User $user, UserEditRequest $request)
+    public function update(UserEditRequest $request, $id)
     {
-        $request->validated();
+        // dd($request->all());
+        $user = User::findOrFail($id);
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'type' => $request->type,
             'cpf' => $request->cpf,
-            'active' === 'S'
+            'active' => $request->active
         ]);
     }
 }

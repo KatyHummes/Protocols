@@ -43,7 +43,7 @@ Route::middleware([
         Route::post('/registro', [AuthController::class, 'register'])->name('register')->middleware([HandlePrecognitiveRequests::class]);
         Route::get('/', [AuthController::class, 'index'])->name('index');
         Route::get('/{user}', [AuthController::class, 'show'])->name('show');
-        Route::put('/editar{user}', [AuthController::class, 'update'])->name('update')->middleware([HandlePrecognitiveRequests::class]);
+        Route::post('/editar/{id}', [AuthController::class, 'update'])->name('update')->middleware([HandlePrecognitiveRequests::class]);
     });
 
     // Departamentos:

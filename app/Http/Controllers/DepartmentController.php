@@ -62,6 +62,7 @@ class DepartmentController extends Controller
             'name' => $request->name,
         ]);
     }
+    
     // acessos para departamentos
     public function access(Request $request, $id)
     {

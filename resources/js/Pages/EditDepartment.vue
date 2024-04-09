@@ -1,6 +1,6 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
-import { ref, defineProps } from 'vue';
+import { ref, computed, defineProps } from 'vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
@@ -13,6 +13,13 @@ const props = defineProps({
     users: Array,
     accesses: Array,
 });
+
+const avaliableUsers = computed(() => {
+    return props.users.filter(user => {
+        return !props.accesses.some(access => access.user_id === user.id);
+    });
+});
+
 
 // formularios para atualizar o departamento
 const form = useForm('post', route('departments.update', props.department.id), {
@@ -42,49 +49,18 @@ const formAccess = useForm('post', route('departments.access', props.department.
     user_id: null,
 });
 
-// const submitAccess = () => formAccess.submit({
-//     preserveScroll: true,
-//     onSuccess: () => {
-//         formAccess.reset();
-//         toast.open({
-//             message: 'Acesso liberado com sucesso!',
-//             type: 'success',
-//             position: 'top-right',
-//         });
-//     },
-// });
-
-const submitAccess = () => {
-    // Verifica se o user_id está definido
-    if (!formAccess.data.user_id) {
+const submitAccess = () => formAccess.submit({
+    preserveScroll: true,
+    onSuccess: () => {
+        formAccess.reset();
         toast.open({
-            message: 'Selecione um usuário para de liberar o acesso ou Usuário já possui acesso!',
-            type: 'error',
+            message: 'Acesso liberado com sucesso!',
+            type: 'success',
             position: 'top-right',
         });
-        return;
-    }
+    },
+});
 
-    // Se o user_id estiver definido, envia a solicitação
-    formAccess.submit({
-        preserveScroll: true,
-        onSuccess: () => {
-            formAccess.reset();
-            toast.open({
-                message: 'Acesso liberado com sucesso!',
-                type: 'success',
-                position: 'top-right',
-            });
-        },
-        onError: (error) => {
-            toast.open({
-                message: error.response.data.message,
-                type: 'error',
-                position: 'top-right',
-            });
-        }
-    });
-};
 
 // Modal para confirmar a remoção de um acesso
 const accessId = ref()
@@ -160,7 +136,7 @@ const formatDate = (dateString) => {
                 <v-card title="Usuários" flat>
                     <form @submit.prevent="submitAccess">
                         <v-container class="flex justify-between items-center">
-                            <v-select label="Usuários" :items="users" item-title="name" v-model="formAccess.user_id"
+                            <v-select label="Usuários" :items="avaliableUsers" item-title="name" v-model="formAccess.user_id"
                                 item-value="id" variant="outlined"></v-select>
                             <v-btn class="m-4 p-3" type="submit"
                                 v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">Liberar

@@ -56,6 +56,10 @@ class ProtocolController extends Controller
     // Editar protocolos
     public function show($id)
     {
+        $userType = auth()->user()->type;
+        if ($userType === 'A') {
+            
+        } 
         $protocol = Protocol::with('people', 'docattachs')->findOrFail($id);
         $departments = Department::get(['id', 'name']);
         $peoples = People::get(['id', 'name']);

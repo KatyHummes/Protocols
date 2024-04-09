@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('type');
             $table->string('cpf');
-            $table->enum('ativo', ['S', 'N'])->default('S');
+            $table->enum('active', ['S', 'N'])->default('S');
             $table->string('password');
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();
