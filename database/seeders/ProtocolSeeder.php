@@ -18,7 +18,7 @@ class ProtocolSeeder extends Seeder
         $userIds = DB::table('people')->pluck('id')->toArray();
         $departmentIds = DB::table('departments')->pluck('id')->toArray();
 
-        foreach (range(1, 200) as $index) {
+        foreach (range(1, 100) as $index) {
 
             $timestamps = $faker->date();
             

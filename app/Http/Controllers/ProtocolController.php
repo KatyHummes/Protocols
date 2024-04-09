@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProtocolRequest;
+use App\Models\Access;
 use App\Models\Department;
 use App\Models\DocAttach;
 use App\Models\People;
 use App\Models\Protocol;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 // Criar protocolos
@@ -16,15 +18,21 @@ class ProtocolController extends Controller
 {
     public function index()
     {
-        $departments = Department::get(['id', 'name']);
+        $userId = Auth::id();
+
+        $allowedDepartments = Access::where('user_id', $userId)->pluck('department_id');
+
+        $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
         $peoples = People::get(['id', 'name']);
-        $protocols = Protocol::with('people')->get();
+        $protocols = Protocol::with('people')->whereIn('department_id', $allowedDepartments)->get();
+
         return Inertia::render('Protocols', [
             'protocols' => $protocols,
             'peoples' => $peoples,
             'departments' => $departments,
         ]);
     }
+
 
     public function store(ProtocolRequest $request)
     {
@@ -55,20 +63,26 @@ class ProtocolController extends Controller
 
     // Editar protocolos
     public function show($id)
-    {
-        $userType = auth()->user()->type;
-        if ($userType === 'A') {
-            
-        } 
-        $protocol = Protocol::with('people', 'docattachs')->findOrFail($id);
-        $departments = Department::get(['id', 'name']);
-        $peoples = People::get(['id', 'name']);
-        return Inertia::render('EditProtocol', [
-            'protocol' => $protocol,
-            'departments' => $departments,
-            'peoples' => $peoples,
-        ]);
-    }
+{
+    $userId = Auth::id();
+    
+    $allowedDepartments = Access::where('user_id', $userId)->pluck('department_id');
+
+    $protocol = Protocol::with('people', 'docattachs')
+        ->whereIn('department_id', $allowedDepartments)
+        ->findOrFail($id);
+
+    // Obter apenas os departamentos permitidos para o usuário
+    $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
+    $peoples = People::get(['id', 'name']);
+
+    return Inertia::render('EditProtocol', [
+        'protocol' => $protocol,
+        'departments' => $departments,
+        'peoples' => $peoples,
+    ]);
+}
+    
 
     public function update(ProtocolRequest $request, $id)
     {

@@ -115,6 +115,12 @@ const calculateFinalDate = (startDate, term) => {
     // Convertendo para uma string legível
     return finalDateObj.toLocaleDateString();
 };
+
+// Função para formatar a data da tabela
+const formatDate = (dateString) => {
+  const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
 </script>
 
 <template>
@@ -237,7 +243,7 @@ const calculateFinalDate = (startDate, term) => {
                                 <tr v-for="protocol in displayedProtocols" :key="protocol.name">
                                     <td>{{ protocol.id }}</td>
                                     <td>{{ protocol.people.name }}</td>
-                                    <td>{{ protocol.date }}</td>
+                                    <td>{{ formatDate(protocol.date) }}</td>
                                     <td>{{ protocol.term }}</td>
                                     <td>{{ calculateFinalDate(protocol.date, protocol.term) }}</td>
                                     <td>

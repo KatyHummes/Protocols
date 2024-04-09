@@ -23,26 +23,24 @@ const form = useForm('put', route('protocol.update', props.protocol.id), {
     description: props.protocol.description,
 });
 
-const submit = () => {
-    form.put(route('protocol.update', props.protocol.id), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-            toast.open({
-                message: 'Protocolo atualizado com sucesso!',
-                type: 'success',
-                position: 'top-right',
-            });
-        },
-        onError: () => {
-            toast.open({
-                message: 'Erro ao atualizar protocolo!',
-                type: 'error',
-                position: 'top-right',
-            });
-        },
-    });
-};
+const submit = () => form.submit({
+    preserveScroll: true,
+    onSuccess: () => {
+        form.reset();
+        toast.open({
+            message: 'Protocolo atualizado com sucesso!',
+            type: 'success',
+            position: 'top-right',
+        });
+    },
+    onError: () => {
+        toast.open({
+            message: 'Erro ao atualizar protocolo!',
+            type: 'error',
+            position: 'top-right',
+        });
+    },
+});
 
 // configuração de datas
 const isMenuOpen = ref(false);
@@ -139,12 +137,22 @@ const tab = ref('one');
                                         <v-btn class="m-4" type="submit" color="primary">Salvar</v-btn>
                                     </div>
                                 </v-card>
-
                             </form>
                         </v-window-item>
 
                         <v-window-item value="two">
-                            Departamentos em que o atendente pode atuar
+                            <h1 class="font-bold text-base m-4">Departamentos em que você, {{ $page.props.auth.user.name }}, pode atuar!</h1>
+                            <v-card>
+                                <!-- {{ $page.props.departments }} -->
+                                <div v-for="department in departments" :key="department.id" cols="12" md="6" ref="updateKey">
+                                    <v-card class="m-4">
+                                        <div class="flex justify-around items-start m-4">
+                                            <div>{{ department.name }}</div>
+                                        </div>
+                                    </v-card>
+                                </div>
+
+                            </v-card>
                         </v-window-item>
                     </v-window>
                 </v-card-text>
