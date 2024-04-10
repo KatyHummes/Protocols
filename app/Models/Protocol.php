@@ -21,6 +21,11 @@ class Protocol extends Model
         return $this->hasMany(DocAttach::class);
     }
 
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
+
     public function people()
     {
         return $this->belongsTo(People::class);
