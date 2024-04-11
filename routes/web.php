@@ -45,16 +45,15 @@ Route::middleware([
     Route::get('/usuario{user}', [AuthController::class, 'show'])->name('user.show');
     Route::post('/editar-usuario/{id}', [AuthController::class, 'update'])->name('user.update')->middleware([HandlePrecognitiveRequests::class]);
 
-
     // Departamentos:
-    Route::prefix('/departamentos')->name('departments.')->group(function () {
-        Route::get('/', [DepartmentController::class, 'index'])->name('index');
-        Route::post('/', [DepartmentController::class, 'store'])->name('store')->middleware([HandlePrecognitiveRequests::class]);
-        Route::get('/{id}', [DepartmentController::class, 'show'])->name('show');
-        Route::put('/{id}', [DepartmentController::class, 'update'])->name('update')->middleware([HandlePrecognitiveRequests::class]);
-        Route::post('/access/{id}', [DepartmentController::class, 'access'])->name('access')->middleware([HandlePrecognitiveRequests::class]);
-    });
-    Route::post('access-destroy/{id}', [DepartmentController::class, 'destroy'])->name('access.destroy');
+    Route::get('/departamentos', [DepartmentController::class, 'index'])->name('departments.index');
+    Route::post('/departamento', [DepartmentController::class, 'store'])->name('department.store')->middleware([HandlePrecognitiveRequests::class]);
+    Route::get('/departamento/{id}', [DepartmentController::class, 'show'])->name('department.show');
+    Route::put('/departamento/{id}', [DepartmentController::class, 'update'])->name('department.update')->middleware([HandlePrecognitiveRequests::class]);
+
+    // Acesso:
+    Route::post('/access/{id}', [ReportController::class, 'access'])->name('access')->middleware([HandlePrecognitiveRequests::class]);
+    Route::post('access-destroy/{id}', [ReportController::class, 'destroy'])->name('access.destroy');
 
     // Acompanhamento:
     Route::post('/acompanhamento', [ReportController::class, 'store'])->name('store.Report')->middleware([HandlePrecognitiveRequests::class]);

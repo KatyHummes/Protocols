@@ -62,29 +62,5 @@ class DepartmentController extends Controller
             'name' => $request->name,
         ]);
     }
-    
-    // acessos para departamentos
-    public function access(Request $request, $id)
-    {
-        // Verifica se já existe uma entrada para este usuário neste departamento
-        $existingAccess = Access::where('user_id', $request->user_id)
-            ->where('department_id', $id)
-            ->exists();
-        // Se já existir, retorna para a mesma página com a mensagem de erro
-        if ($existingAccess) {
-            return redirect()->back();
-        }
-        // Caso contrário, cria o novo acesso
-        Access::create([
-            'user_id' => $request->user_id,
-            'department_id' => $id,
-        ]);
-    }
 
-    // Remover Acesso de Departamento
-    public function destroy($id)
-    {
-        $access = Access::find($id);
-        $access->delete();
-    }
 }

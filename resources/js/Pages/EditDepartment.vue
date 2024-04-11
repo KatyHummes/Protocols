@@ -22,7 +22,7 @@ const avaliableUsers = computed(() => {
 
 
 // formularios para atualizar o departamento
-const form = useForm('post', route('departments.update', props.department.id), {
+const form = useForm('post', route('department.update', props.department.id), {
     name: props.department.name,
 });
 
@@ -45,7 +45,7 @@ const submit = () => form.submit({
 });
 
 // formulario para liberar acesso
-const formAccess = useForm('post', route('departments.access', props.department.id), {
+const formAccess = useForm('post', route('access', props.department.id), {
     user_id: null,
 });
 

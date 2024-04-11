@@ -40,7 +40,7 @@ const updatePage = (newPage) => {
 
 // inclusão de Departamento
 const toast = useToast();
-const form = useForm('post', route('departments.store'), {
+const form = useForm('post', route('department.store'), {
     name: '',
 });
 
@@ -124,7 +124,7 @@ const submit = () => form.submit({
                                     <td>{{ department.name }}</td>
                                     <td>
                                         <div class="flex gap-4">
-                                            <Link :href="route('departments.show', department.id)">
+                                            <Link :href="route('department.show', department.id)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                                 stroke-width="1.5" stroke="currentColor"
                                                 class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">
