@@ -178,8 +178,7 @@ const downloadPDF = () => {
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
 
-                        <v-col cols="auto" class="flex justify-center mb-5">
-                            <v-btn @click="downloadPDF">Baixar PDF</v-btn>
+                        <v-col cols="auto" class="flex justify-between mb-5">
                             <v-dialog transition="dialog-top-transition" max-width="500">
                                 
                                 <template v-slot:activator="{ props: activatorProps }">
@@ -265,6 +264,7 @@ const downloadPDF = () => {
                                     </form>
                                 </template>
                             </v-dialog>
+                            <v-btn @click="downloadPDF">Baixar PDF</v-btn>
                         </v-col>
 
                         <v-card title="Protocolos" flat>

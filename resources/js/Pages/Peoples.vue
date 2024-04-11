@@ -13,17 +13,6 @@ const props = defineProps({
     peoples: Array,
 });
 
-// Modal incluir pessoas
-const openingPeopleModal = ref(false);
-
-const openCreatePeopleModal = () => {
-    openingPeopleModal.value = true;
-};
-
-const closeCreatePeopleModal = () => {
-    openingPeopleModal.value = false;
-};
-
 const form = useForm('post', route('people.store'), {
     name: '',
     birth: null,
@@ -56,8 +45,8 @@ const submit = () => form.submit({
 // configuração de datas
 const isMenuOpen = ref(false);
 const formattedDate = computed(() => {
-    if (!form.birth) return '';
-    const dateObj = new Date(form.birth);
+    if (!form.date) return '';
+    const dateObj = new Date(form.date);
     return dateObj.toLocaleDateString('pt-BR');
 });
 
@@ -94,8 +83,8 @@ const updatePage = (newPage) => {
 
 // Função para formatar a data da tabela
 const formatDate = (dateString) => {
-  const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
 // Modal deletar pessoas
@@ -127,7 +116,6 @@ const deletePeople = () => {
 }
 </script>
 
-
 <template>
     <AppLayout>
         <template #header>
@@ -140,7 +128,98 @@ const deletePeople = () => {
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
                         <v-col cols="auto" class="flex justify-center mb-5">
-                            <v-btn size="large" @click="openCreatePeopleModal">Criar Pessoas</v-btn>
+                            <v-dialog max-width="500">
+                                <template v-slot:activator="{ props: activatorProps }">
+                                    <v-btn v-bind="activatorProps" size="large" color="primary" text="Incluir Pessoas"
+                                        variant="flat"></v-btn>
+                                </template>
+
+                                <template v-slot:default="{ isActive }">
+                                    <v-card title="Incluir Pessoas">
+                                        <form @submit.prevent="submit">
+                                            <v-card-text>
+                                                <h2>Dados Pessoais:</h2>
+                                                <v-container>
+                                                    <v-text-field label="Nome:*" v-model="form.name" variant="outlined"
+                                                        @change="form.validate('name')"></v-text-field>
+                                                    <span v-if="form.invalid('name')" class="text-base text-red-500">
+                                                        {{ form.errors.name }}
+                                                    </span>
+                                                </v-container>
+                                                <v-container>
+                                                    <v-menu v-model="isMenuOpen" :close-on-content-click="false">
+                                                        <template v-slot:activator="{ props }">
+                                                            <v-text-field label="Selecione a data:*"
+                                                                :model-value="formattedDate" v-bind="props"
+                                                                variant="outlined"></v-text-field>
+                                                        </template>
+                                                        <v-date-picker v-model="form.date"
+                                                            :rules="[() => dateValidation(form.date, 30, 0)]"
+                                                            @change="form.validate('date')"></v-date-picker>
+                                                    </v-menu>
+                                                    <span v-if="form.invalid('date')" class="text-base text-red-500">
+                                                        {{ form.errors.date }}
+                                                    </span>
+                                                </v-container>
+                                                {{ form.birth }}
+                                                <v-container>
+                                                    <v-text-field label="cpf:*" v-model="form.cpf" variant="outlined"
+                                                        v-mask="'###.###.###-##'"
+                                                        @change="form.validate('cpf')"></v-text-field>
+                                                    <span v-if="form.invalid('cpf')" class="text-base text-red-500">
+                                                        {{ form.errors.cpf }}
+                                                    </span>
+                                                </v-container>
+                                                <v-container>
+                                                    <div class="flex">
+                                                        <h2>sexo:*</h2>
+                                                        <v-radio-group v-model="form.sex" inline
+                                                            @change="form.validate('sex')">
+                                                            <v-radio label="Masculino" value="Masculino"></v-radio>
+                                                            <v-radio label="Feminino" value="Feminino"></v-radio>
+                                                            <v-radio label="Outro" value="Outro"></v-radio>
+                                                        </v-radio-group>
+                                                    </div>
+                                                    <span v-if="form.invalid('sex')" class="text-base text-red-500">
+                                                        {{ form.errors.sex }}
+                                                    </span>
+                                                </v-container>
+
+                                                <h2>Endereço:</h2>
+                                                <div class="grid gap-4 mb-7">
+                                                    <div>
+                                                        <v-text-field label="Cidade" v-model="form.city"
+                                                            variant="outlined"></v-text-field>
+                                                    </div>
+                                                    <div>
+                                                        <v-text-field label="Bairro" v-model="form.neighborhood"
+                                                            variant="outlined"></v-text-field>
+                                                    </div>
+                                                    <div>
+                                                        <v-text-field label="Rua" v-model="form.street"
+                                                            variant="outlined"></v-text-field>
+                                                    </div>
+                                                    <div>
+                                                        <v-text-field label="Número" v-model="form.number"
+                                                            variant="outlined"></v-text-field>
+                                                    </div>
+                                                    <div>
+                                                        <v-textarea label="Complemento" v-model="form.complement"
+                                                            variant="outlined"></v-textarea>
+                                                    </div>
+                                                </div>
+                                            </v-card-text>
+
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
+
+                                                <v-btn text="Cancelar" @click="isActive.value = false"></v-btn>
+                                                <v-btn type="submit">Salvar</v-btn>
+                                            </v-card-actions>
+                                        </form>
+                                    </v-card>
+                                </template>
+                            </v-dialog>
                         </v-col>
 
                         <v-card title="Pessoas" flat>
@@ -171,14 +250,14 @@ const deletePeople = () => {
                                     <td>
                                         <div class="flex gap-4">
                                             <Link :href="route('people.show', people.id)">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor"
-                                                    class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                                </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor"
+                                                class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                            </svg>
                                             </Link>
 
                                             <button size="small" @click="openDeleteModal(people.id)">
@@ -218,105 +297,6 @@ const deletePeople = () => {
                         Excluir
                     </v-btn>
                 </div>
-            </form>
-        </div>
-    </Modal>
-
-    <!-- Inclusão de Pessoas -->
-    <Modal :show="openingPeopleModal" @close="closeCreatePeopleModal" :max-width="'6xl'">
-        <div class="flex justify-between p-6">
-            <h3 class="font-semibold text-xl text-gray-800 leading-tight">
-                Criar Pessoas
-            </h3>
-            <v-btn @click="closeCreatePeopleModal" type="button"
-                class="rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center">
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                    viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                </svg>
-            </v-btn>
-        </div>
-        <div class="p-6">
-            <form @submit.prevent="submit">
-                <h2>Dados Pessoais:</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="mb-7">
-                        <v-text-field label="Nome:*" v-model="form.name" variant="outlined"
-                            @change="form.validate('name')"></v-text-field>
-                        <span v-if="form.invalid('name')" class="text-base text-red-500">
-                            {{ form.errors.name }}
-                        </span>
-                    </div>
-                    <div>
-                        <v-text-field label="Data de Nascimento:*" v-model="form.birth" type="date"
-                            @change="form.validate('birth')" variant="outlined"></v-text-field>
-                        <span v-if="form.invalid('birth')" class="text-base text-red-500">
-                            {{ form.errors.birth }}
-                        </span>
-                    </div>
-                    <!-- <div>
-                        <v-menu v-model="isMenuOpen" :close-on-content-click="false">
-                            <template v-slot:activator="{ props }">
-                                <v-text-field label="Data de Nascimento:*" :model-value="formattedDate" v-bind="props"
-                                    variant="outlined"></v-text-field>
-                            </template>
-                            <v-date-picker v-model="form.birth" @change="form.validate('birth')"></v-date-picker>
-                        </v-menu>
-                        <span v-if="form.invalid('birth')" class="text-base text-red-500">
-                            {{ form.errors.birth }}
-                        </span>
-                    </div>
-                    {{ form.birth }} -->
-                    <div>
-                        <v-text-field label="cpf:*" v-model="form.cpf" variant="outlined" v-mask="'###.###.###-##'"
-                            @change="form.validate('cpf')"></v-text-field>
-                        <span v-if="form.invalid('cpf')" class="text-base text-red-500">
-                            {{ form.errors.cpf }}
-                        </span>
-                    </div>
-                    <div>
-                        <div class="flex">
-                            <h2>sexo:*</h2>
-                            <v-radio-group v-model="form.sex" inline @change="form.validate('sex')">
-                                <v-radio label="Masculino" value="Masculino"></v-radio>
-                                <v-radio label="Feminino" value="Feminino"></v-radio>
-                                <v-radio label="Outro" value="Outro"></v-radio>
-                            </v-radio-group>
-                        </div>
-                        <span v-if="form.invalid('sex')" class="text-base text-red-500">
-                            {{ form.errors.sex }}
-                        </span>
-                    </div>
-                </div>
-                <h2>Endereço:</h2>
-                <div class="grid grid-cols-2 gap-4 mb-7">
-                    <div>
-                        <v-text-field label="Cidade" v-model="form.city" variant="outlined"></v-text-field>
-                    </div>
-                    <div>
-                        <v-text-field label="Bairro" v-model="form.neighborhood" variant="outlined"></v-text-field>
-                    </div>
-                    <div>
-                        <v-text-field label="Rua" v-model="form.street" variant="outlined"></v-text-field>
-                    </div>
-                    <div>
-                        <v-text-field label="Número" v-model="form.number" variant="outlined"></v-text-field>
-                    </div>
-                    <div>
-                        <v-textarea label="Complemento" v-model="form.complement" variant="outlined"></v-textarea>
-                    </div>
-                </div>
-
-                <div class="flex justify-between">
-                    <v-btn type="button" @click="closeCreatePeopleModal">
-                        Cancelar
-                    </v-btn>
-                    <v-btn type="submit">
-                        Salvar
-                    </v-btn>
-                </div>
-
             </form>
         </div>
     </Modal>
