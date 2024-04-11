@@ -22,7 +22,7 @@ class AuthController extends Controller
         if ($userActive === 'N') {
             return redirect()->back();
         }
-        return Inertia::render('CreateUser');
+        return Inertia::render('Users/Create');
     }
 
     public function register(AuthRequest $request)
@@ -43,7 +43,7 @@ class AuthController extends Controller
         if ($userType === 'A') {
             return redirect()->back();
         } 
-        return Inertia::render('UsersIndex', [
+        return Inertia::render('Users/Index', [
             'users' => User::all(),
         ]);
     }
@@ -58,7 +58,7 @@ class AuthController extends Controller
         if ($userType === 'A') {
             return redirect()->back();
         } 
-        return Inertia::render('UsersShow', [
+        return Inertia::render('Users/Show', [
             'user' => $user,
         ]);
     }

@@ -40,12 +40,11 @@ Route::middleware([
 
     // Autenticação:
     Route::get('/registro', [AuthController::class, 'create'])->name('create');
-    Route::prefix('/usuarios')->name('users.')->group(function () {
-        Route::post('/registro', [AuthController::class, 'register'])->name('register')->middleware([HandlePrecognitiveRequests::class]);
-        Route::get('/', [AuthController::class, 'index'])->name('index');
-        Route::get('/{user}', [AuthController::class, 'show'])->name('show');
-        Route::post('/editar/{id}', [AuthController::class, 'update'])->name('update')->middleware([HandlePrecognitiveRequests::class]);
-    });
+    Route::post('usuario-registro', [AuthController::class, 'register'])->name('user.register')->middleware([HandlePrecognitiveRequests::class]);
+    Route::get('/usuarios', [AuthController::class, 'index'])->name('users.index');
+    Route::get('/usuario{user}', [AuthController::class, 'show'])->name('user.show');
+    Route::post('/editar-usuario/{id}', [AuthController::class, 'update'])->name('user.update')->middleware([HandlePrecognitiveRequests::class]);
+
 
     // Departamentos:
     Route::prefix('/departamentos')->name('departments.')->group(function () {

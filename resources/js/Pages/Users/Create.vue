@@ -12,7 +12,7 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 
 const toast = useToast();
 
-const form = useForm('post', route('users.register'), {
+const form = useForm('post', route('user.register'), {
     name: '',
     email: '',
     password: '',

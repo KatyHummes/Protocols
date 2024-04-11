@@ -98,7 +98,7 @@ const translateActive = (active) => {
                                 <td>{{ translateActive(user.active) }}</td>
                                 <td>
                                     <div class="flex gap-4">
-                                        <Link :href="route('users.show', user.id)">
+                                        <Link :href="route('user.show', user.id)">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                             stroke-width="1.5" stroke="currentColor"
                                             class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">
