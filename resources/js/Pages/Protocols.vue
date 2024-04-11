@@ -6,6 +6,7 @@ import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Modal from '@/Components/Modal.vue';
+import jsPDF from 'jspdf';
 
 const toast = useToast();
 
@@ -121,6 +122,48 @@ const formatDate = (dateString) => {
   const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
   return new Date(dateString).toLocaleDateString(undefined, options);
 };
+
+const downloadPDF = () => {
+    const doc = new jsPDF();
+    const protocolsData = props.protocols;
+    let y = 10;
+
+    protocolsData.forEach((protocol, index) => {
+        const lines = doc.splitTextToSize(`Descrição do Protocolo: ${protocol.description}`, 180);
+        const lineHeight = 5;
+        const descriptionHeight = lines.length * lineHeight;
+
+        if (y + descriptionHeight > doc.internal.pageSize.height - 20) {
+            doc.addPage();
+            y = 10; // Reinicie a posição Y na nova página
+        }
+
+        // Adicione um cabeçalho na primeira linha de cada página
+        if (y === 10 || index === 0) {
+            doc.setFontSize(18);
+            doc.setTextColor(0, 0, 255); // Cor azul
+            doc.text('Protocolos', 10, y);
+            y += 10;
+        }
+
+        // Adicione linhas de tabela com cores alternadas
+        if (index % 2 === 0) {
+            doc.setFillColor(230, 230, 230); // Cor de fundo para linhas ímpares
+            doc.rect(10, y - 5, 190, 10, 'F'); // Adiciona retângulo de fundo
+        }
+        doc.setFontSize(12);
+        doc.setTextColor(0);
+        doc.text(`Nome do Contribuinte: ${protocol.people.name}`, 15, y);
+        doc.text(`Data: ${protocol.date}`, 15, y + 5);
+        lines.forEach((line, i) => {
+            doc.text(line, 15, y + 10 + (i * lineHeight));
+        });
+        y += 20 + (lines.length - 1) * lineHeight; // Altura da linha + altura extra para cada linha adicional
+    });
+
+    doc.save('Protocolos.pdf');
+}
+
 </script>
 
 <template>
@@ -136,7 +179,9 @@ const formatDate = (dateString) => {
                     <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
 
                         <v-col cols="auto" class="flex justify-center mb-5">
+                            <v-btn @click="downloadPDF">Baixar PDF</v-btn>
                             <v-dialog transition="dialog-top-transition" max-width="500">
+                                
                                 <template v-slot:activator="{ props: activatorProps }">
                                     <v-btn size="large" v-bind="activatorProps">Criar Protocolo</v-btn>
                                 </template>
