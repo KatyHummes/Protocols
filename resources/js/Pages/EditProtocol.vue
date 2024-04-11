@@ -8,12 +8,16 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 
 const toast = useToast();
 
+const tab = ref('one');
+
 const props = defineProps({
     protocol: Object,
     peoples: Array,
     departments: Array,
+    reports: Array,
 });
 
+// Editar Protocolos
 const form = useForm('put', route('protocol.update', props.protocol.id), {
     id: props.protocol.id,
     date: new Date(props.protocol.date),
@@ -42,7 +46,7 @@ const submit = () => form.submit({
     },
 });
 
-// configuração de datas
+// configuração de data do input
 const isMenuOpen = ref(false);
 const selectedDate = ref()
 const formattedDate = computed(() => {
@@ -53,9 +57,45 @@ const formattedDate = computed(() => {
 
 watch(selectedDate, (newValue, oldValue) => {
     isMenuOpen.value = false
-})
+});
 
-const tab = ref('one');
+// script Acompanhamentos:
+const formReport = useForm('post', route('store.Report'), {
+    protocol_id: props.protocol.id,
+    description: '',
+    status: '',
+});
+
+const reportSubmit = () => formReport.submit({
+    preserveScroll: true,
+    onSuccess: () => {
+        formReport.reset();
+        toast.success("Pessoa criada com Sucesso!", {
+            position: 'top-right',
+        });
+    },
+    onError: () => {
+        toast.error("Erro ao atualizar Protocolo!", {
+            position: 'top-right',
+        });
+    }
+});
+
+const formatDate = (dateString) => {
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+const translateStatus = (status) => {
+    switch (status) {
+        case 'A':
+            return 'Aberto';
+        case 'E':
+            return 'Em atendimento';
+        case 'S':
+            return 'Solucionado';
+    }
+};
 </script>
 
 <template>
@@ -64,7 +104,7 @@ const tab = ref('one');
             <v-card>
                 <v-tabs v-model="tab" class="bg-violet-100">
                     <v-tab value="one">Visualizar Protocolo</v-tab>
-                    <v-tab value="two">Departamentos</v-tab>
+                    <v-tab value="two">Acompanhamentos</v-tab>
                 </v-tabs>
                 <v-card-text>
                     <v-window v-model="tab">
@@ -141,18 +181,70 @@ const tab = ref('one');
                         </v-window-item>
 
                         <v-window-item value="two">
-                            <h1 class="font-bold text-base m-4">Departamentos em que você, {{ $page.props.auth.user.name }}, pode atuar!</h1>
-                            <v-card>
-                                <!-- {{ $page.props.departments }} -->
-                                <div v-for="department in departments" :key="department.id" cols="12" md="6" ref="updateKey">
+                            <v-dialog max-width="500">
+                                <template v-slot:activator="{ props: activatorProps }">
+                                    <v-btn v-bind="activatorProps" color="surface-variant" variant="flat"
+                                        class="flex justify-end items-end P-8 bg-black rounded-full border-2 border-neutral-500"><svg
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M12 4.5v15m7.5-7.5h-15" />
+                                        </svg>Acompanhamento
+                                    </v-btn>{{ $page.props.Report }}
+                                </template>
+
+                                <template v-slot:default="{ isActive }">
+                                    <v-card title="Incluir Acompanhamento">
+                                        <form @submit.prevent="reportSubmit">
+                                            <v-card-text>
+                                                <v-container>
+
+                                                    <v-radio-group v-model="formReport.status" inline label="Situação"
+                                                        @change="formReport.validate('status')">
+                                                        <v-radio label="Aberto" value="A"></v-radio>
+                                                        <v-radio label="Em atendimento" value="E"></v-radio>
+                                                        <v-radio label="Solucionado" value="S"></v-radio>
+                                                    </v-radio-group>
+                                                    <span v-if="formReport.errors.status"
+                                                        class="text-base text-red-500">
+                                                        {{ formReport.errors.status }}
+                                                    </span>
+
+                                                    <v-textarea v-model="formReport.description" label="Descrição"
+                                                        variant="outlined"
+                                                        @change="formReport.validate('description')"></v-textarea>
+                                                    <span v-if="formReport.invalid('description')"
+                                                        class="text-base text-red-500">
+                                                        {{ formReport.errors.description }}
+                                                    </span>
+                                                </v-container>
+                                            </v-card-text>
+
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
+                                                <v-btn text="Cancelar" @click="isActive.value = false"></v-btn>
+                                                <v-btn class="m-4" type="submit" color="primary">Salvar</v-btn>
+                                            </v-card-actions>
+                                        </form>
+                                    </v-card>
+                                </template>
+                            </v-dialog>
+                            <v-card-text>
+                                <h1>Acompanhamento Realizados:</h1>
+
+                                <div v-for="report in reports" :key="report.id" cols="12" md="6" ref="updateKey">
                                     <v-card class="m-4">
-                                        <div class="flex justify-around items-start m-4">
-                                            <div>{{ department.name }}</div>
-                                        </div>
+                                        <v-container>
+                                            <div class="flex justify-between m-4">
+                                                <div>Situação: {{ translateStatus(report.status) }}</div>
+                                                <div>Data: {{ formatDate(report.created_at) }}</div>
+                                            </div>
+                                            <div>{{ report.description }}</div>
+                                        </v-container>
                                     </v-card>
                                 </div>
+                            </v-card-text>
 
-                            </v-card>
                         </v-window-item>
                     </v-window>
                 </v-card-text>

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use App\Http\Controllers\ProtocolController;
+use App\Http\Controllers\ReportController;
 use App\Models\User;
 use Illuminate\Routing\RouteGroup;
 
@@ -55,4 +56,7 @@ Route::middleware([
         Route::post('/access/{id}', [DepartmentController::class, 'access'])->name('access')->middleware([HandlePrecognitiveRequests::class]);
     });
     Route::post('access-destroy/{id}', [DepartmentController::class, 'destroy'])->name('access.destroy');
+
+    // Acompanhamento:
+    Route::post('/acompanhamento', [ReportController::class, 'store'])->name('store.Report')->middleware([HandlePrecognitiveRequests::class]);
 });

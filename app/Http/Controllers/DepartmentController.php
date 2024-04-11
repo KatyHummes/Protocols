@@ -43,7 +43,7 @@ class DepartmentController extends Controller
             $query->select('id', 'name');
         }])->where('department_id', $id)->get();
 
-        $department = Department::find($id);
+        $department = Department::findOrFail($id);
         return Inertia::render('EditDepartment', [
             'users' => User::get(['id', 'name']),
             'department' => $department,
@@ -57,7 +57,7 @@ class DepartmentController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $department = Department::find($id);
+        $department = Department::findOrFail($id);
         $department->update([
             'name' => $request->name,
         ]);

@@ -9,7 +9,7 @@ use App\Models\DocAttach;
 use App\Models\People;
 use App\Models\Protocol;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
+use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -75,11 +75,13 @@ class ProtocolController extends Controller
     // Obter apenas os departamentos permitidos para o usuário
     $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
     $peoples = People::get(['id', 'name']);
+    $reports = Report::where('protocol_id', $id)->get();
 
     return Inertia::render('EditProtocol', [
         'protocol' => $protocol,
         'departments' => $departments,
         'peoples' => $peoples,
+        'reports' => $reports,
     ]);
 }
     
