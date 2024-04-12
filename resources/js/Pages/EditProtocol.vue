@@ -1,10 +1,12 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
-import AppLayout from '@/Layouts/AppLayout.vue';
-import { useForm } from 'laravel-precognition-vue-inertia';
 import { ref, computed, defineProps, watch } from 'vue';
+import { Link } from '@inertiajs/vue3';
+import { useForm } from 'laravel-precognition-vue-inertia';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const toast = useToast();
 
@@ -96,6 +98,44 @@ const translateStatus = (status) => {
             return 'Solucionado';
     }
 };
+
+// Função para gerar o PDF
+const generatePDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text('Protocolo: ' + props.protocol.id, 10, 10);
+    doc.setFontSize(12);
+    doc.text(`Data: ${formatDate(form.date)}`, 10, 20);
+    doc.text(`Departamento: ${props.departments.find(d => d.id === form.department_id)?.name}`, 10, 30);
+    doc.text(`Contribuinte: ${props.peoples.find(p => p.id === form.people_id)?.name}`, 10, 40);
+
+    doc.setFont('helvetica', 'normal');
+    let currentY = 50;
+    const splitDescription = doc.splitTextToSize(form.description, 180);
+    doc.text(splitDescription, 10, currentY);
+    currentY += splitDescription.length * 10 + 10;
+
+    props.reports.forEach((report, index) => {
+        doc.text(`Relatório ${index + 1}:`, 10, currentY);
+        const splitReportDescription = doc.splitTextToSize(report.description, 180);
+        doc.text(splitReportDescription, 10, currentY + 10);
+        currentY += splitReportDescription.length * 10 + 10;
+
+        doc.text(`Situação: ${translateStatus(report.status)}`, 10, currentY);
+        doc.text(`Data: ${formatDate(report.created_at)}`, 10, currentY + 10);
+        currentY += 20;
+
+        if (currentY > 280) { // Verifica se precisa de uma nova página
+            doc.addPage();
+            currentY = 10;
+        }
+    });
+
+    doc.save(`protocolo-${props.protocol.id}.pdf`);
+};
+
 </script>
 
 <template>
@@ -183,14 +223,20 @@ const translateStatus = (status) => {
                         <v-window-item value="two">
                             <v-dialog max-width="500">
                                 <template v-slot:activator="{ props: activatorProps }">
-                                    <v-btn v-bind="activatorProps" color="surface-variant" variant="flat"
-                                        class="flex justify-end items-end P-8 bg-black rounded-full border-2 border-neutral-500"><svg
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>Acompanhamento
-                                    </v-btn>{{ $page.props.Report }}
+                                    <div class="flex justify-between">
+                                        <v-btn v-bind="activatorProps" color="surface-variant" variant="flat"
+                                            class="flex justify-end items-end P-8 bg-black rounded-full border-2 border-neutral-500"><svg
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M12 4.5v15m7.5-7.5h-15" />
+                                            </svg>Acompanhamento
+                                        </v-btn>
+                                        <v-btn @click="generatePDF" color="surface-variant" variant="flat"
+                                            class="flex justify-end items-end p-8 bg-black rounded-full border-2 border-neutral-500">
+                                            PDF do Protocolo
+                                        </v-btn>
+                                    </div>
                                 </template>
 
                                 <template v-slot:default="{ isActive }">
