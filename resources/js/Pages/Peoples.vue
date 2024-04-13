@@ -28,14 +28,13 @@ const form = useForm('post', route('people.store'), {
 const submit = () => form.submit({
     preserveScroll: true,
     onSuccess: () => {
-        closeCreatePeopleModal();
         form.reset();
         toast.success("Pessoa criada com Sucesso!", {
             position: 'top-right',
         });
     },
-    onError: () => {
-        closeCreatePeopleModal();
+    onError: (error) => {
+        console.log(error)
         toast.error("Erro ao criar Pessoa!", {
             position: 'top-right',
         });
@@ -45,8 +44,8 @@ const submit = () => form.submit({
 // configuração de datas
 const isMenuOpen = ref(false);
 const formattedDate = computed(() => {
-    if (!form.date) return '';
-    const dateObj = new Date(form.date);
+    if (!form.birth) return '';
+    const dateObj = new Date(form.birth);
     return dateObj.toLocaleDateString('pt-BR');
 });
 
@@ -153,12 +152,12 @@ const deletePeople = () => {
                                                                 :model-value="formattedDate" v-bind="props"
                                                                 variant="outlined"></v-text-field>
                                                         </template>
-                                                        <v-date-picker v-model="form.date"
-                                                            :rules="[() => dateValidation(form.date, 30, 0)]"
-                                                            @change="form.validate('date')"></v-date-picker>
+                                                        <v-date-picker v-model="form.birth"
+                                                            :rules="[() => dateValidation(form.birth, 30, 0)]"
+                                                            @change="form.validate('birth')"></v-date-picker>
                                                     </v-menu>
-                                                    <span v-if="form.invalid('date')" class="text-base text-red-500">
-                                                        {{ form.errors.date }}
+                                                    <span v-if="form.invalid('birth')" class="text-base text-red-500">
+                                                        {{ form.errors.birth }}
                                                     </span>
                                                 </v-container>
                                                 {{ form.birth }}

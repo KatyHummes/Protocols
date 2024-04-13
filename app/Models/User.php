@@ -10,15 +10,17 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\DB;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
-
+    use \OwenIt\Auditing\Auditable;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -28,8 +30,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'type', 
-        'cpf', 
+        'type',
+        'cpf',
         'active'
     ];
 
@@ -68,18 +70,18 @@ class User extends Authenticatable
     }
 
     protected static function boot()
-{
-    parent::boot();
+    {
+        parent::boot();
 
-    static::updated(function ($user) {
-        // Verificar se o status foi alterado para desativado
-        if ($user->isDirty('active') && $user->active === 'N') {
-            // Remover todas as entradas de acesso associadas a esse usuário
-            DB::table('accesses')->where('user_id', $user->id)->delete();
-        }
-    });
-}
-    
+        static::updated(function ($user) {
+            // Verificar se o status foi alterado para desativado
+            if ($user->isDirty('active') && $user->active === 'N') {
+                // Remover todas as entradas de acesso associadas a esse usuário
+                DB::table('accesses')->where('user_id', $user->id)->delete();
+            }
+        });
+    }
+
     public function departments()
     {
         return $this->belongsToMany(Department::class, 'access', 'user_id', 'department_id');

@@ -57,4 +57,7 @@ Route::middleware([
 
     // Acompanhamento:
     Route::post('/acompanhamento', [ReportController::class, 'store'])->name('store.Report')->middleware([HandlePrecognitiveRequests::class]);
+
+    // Auditoria:
+    // Route::get('/auditoria', [ReportController::class, 'audit'])->name('audit');
 });
