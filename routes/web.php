@@ -62,4 +62,5 @@ Route::middleware([
 
     // Auditoria:
     Route::get('/auditoria', [AuditController::class, 'index'])->name('audit.index');
+    Route::get('/auditoria/{id}', [AuditController::class, 'show'])->name('audit.show');
 });

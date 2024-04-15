@@ -160,7 +160,6 @@ const deletePeople = () => {
                                                         {{ form.errors.birth }}
                                                     </span>
                                                 </v-container>
-                                                {{ form.birth }}
                                                 <v-container>
                                                     <v-text-field label="cpf:*" v-model="form.cpf" variant="outlined"
                                                         v-mask="'###.###.###-##'"

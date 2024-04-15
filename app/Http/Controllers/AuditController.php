@@ -21,4 +21,16 @@ class AuditController extends Controller
             'audits' => $audits
         ]);
     }   
+
+    public function show($id)
+    {
+        $userType = auth()->user()->type;
+        if ($userType === 'A') {
+            return redirect()->back();
+        }
+        $audit = Audit::with('user')->find($id);
+        return Inertia::render('Audit/Show', [
+            'audit' => $audit
+        ]);
+    }
 }
