@@ -13,3 +13,18 @@
         </div>
     </div>
 </template>
+
+<style>
+@keyframes floatAnimation {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.floating {
+    animation: floatAnimation 5s ease-in-out infinite;
+}
+</style>

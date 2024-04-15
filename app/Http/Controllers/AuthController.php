@@ -14,12 +14,12 @@ class AuthController extends Controller
 {
     public function create()
     {
-        $userActive = auth()->user()->active;
-        $userType = auth()->user()->type;
-        if ($userType === 'A') {
+        $authUser = Auth::user();
+
+        if ($authUser->active === 'A') {
             return redirect()->back();
         } 
-        if ($userActive === 'N') {
+        if ($authUser->type === 'N') {
             return redirect()->back();
         }
         return Inertia::render('Users/Create');
@@ -48,16 +48,20 @@ class AuthController extends Controller
         ]);
     }
 
-    public function show(User $user)
+    public function show($id)
     {
-        $userActive = auth()->user()->active;
-        $userType = auth()->user()->type;
-        if ($userActive === 'N') {
+        $user = User::findOrFail($id);
+
+        $authUser = Auth::user();
+
+        if ($authUser->active === 'N') {
             return redirect()->back();
         }
-        if ($userType === 'A') {
+
+        if ($authUser->type === 'A') {
             return redirect()->back();
-        } 
+        }
+
         return Inertia::render('Users/Show', [
             'user' => $user,
         ]);
@@ -70,7 +74,7 @@ class AuthController extends Controller
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+
             'type' => $request->type,
             'cpf' => $request->cpf,
             'active' => $request->active

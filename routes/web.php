@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\PeopleController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\ProtocolController;
 use App\Http\Controllers\ReportController;
 use App\Models\User;
 use Illuminate\Routing\RouteGroup;
+use OwenIt\Auditing\Contracts\Audit;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -42,8 +44,8 @@ Route::middleware([
     Route::get('/registro', [AuthController::class, 'create'])->name('create');
     Route::post('usuario-registro', [AuthController::class, 'register'])->name('user.register')->middleware([HandlePrecognitiveRequests::class]);
     Route::get('/usuarios', [AuthController::class, 'index'])->name('users.index');
-    Route::get('/usuario{user}', [AuthController::class, 'show'])->name('user.show');
-    Route::post('/editar-usuario/{id}', [AuthController::class, 'update'])->name('user.update')->middleware([HandlePrecognitiveRequests::class]);
+    Route::get('/usuario/{id}', [AuthController::class, 'show'])->name('user.show');
+    Route::post('/editar-usuario/{id?}', [AuthController::class, 'update'])->name('user.update')->middleware([HandlePrecognitiveRequests::class]);
 
     // Departamentos:
     Route::get('/departamentos', [DepartmentController::class, 'index'])->name('departments.index');
@@ -59,5 +61,5 @@ Route::middleware([
     Route::post('/acompanhamento', [ReportController::class, 'store'])->name('store.Report')->middleware([HandlePrecognitiveRequests::class]);
 
     // Auditoria:
-    // Route::get('/auditoria', [ReportController::class, 'audit'])->name('audit');
+    Route::get('/auditoria', [AuditController::class, 'index'])->name('audit.index');
 });

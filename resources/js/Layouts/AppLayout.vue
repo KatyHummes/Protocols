@@ -64,6 +64,10 @@ const logout = () => {
                                     v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
                                     Úsuarios
                                 </NavLink>
+                                <NavLink :href="route('audit.index')" :active="route().current('audit.index')"
+                                    v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
+                                    Auditoria
+                                </NavLink>
                             </div>
                         </div>
 
