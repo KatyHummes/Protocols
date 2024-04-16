@@ -1,7 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import { useForm } from 'laravel-precognition-vue-inertia';
-import AuthenticationCard from '@/Components/AuthenticationCard.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -9,6 +8,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import AppLayout from '@/Layouts/AppLayout.vue';
 
 const toast = useToast();
 
@@ -41,94 +41,92 @@ const submit = () => form.submit({
 </script>
 
 <template>
+    <AppLayout>
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                Criar Usuário
+            </h2>
+        </template>
+        <div class="py-12 max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <v-card>
+                <form @submit.prevent="submit">
+                    <v-container>
+                        <v-text-field label="Nome:*" v-model="form.name" variant="outlined"
+                            @change="form.validate('name')"></v-text-field>
+                        <InputError class="mt-2" :message="form.errors.name" />
+                        <span v-if="form.invalid('name')" class="text-base text-red-500">
+                            {{ form.errors.name }}
+                        </span>
+                    </v-container>
 
-    <Head />
-    <AuthenticationCard>
+                    <v-container>
+                        <v-text-field label="Email:" v-model="form.email" variant="outlined" 
+                            @change="form.validate('email')"></v-text-field>
+                        <span v-if="form.invalid('email')" class="text-base text-red-500">
+                            {{ form.errors.email }}
+                        </span>
+                    </v-container>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Nome" class="text-white" />
-                <TextInput id="name" v-model="form.name" type="text" class="mt-1 block w-full" autofocus
-                    autocomplete="name" />
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+                    <v-container>
+                        <v-text-field label="CPF:" v-model="form.cpf" variant="outlined" 
+                            v-mask="'###.###.###-##'" @change="form.validate('cpf')"></v-text-field>
+                        <span v-if="form.invalid('cpf')" class="text-base text-red-500">
+                            {{ form.errors.cpf }}
+                        </span>
+                    </v-container>
 
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" class="text-white" />
-                <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full"
-                    autocomplete="username" />
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+                    <v-container>
+                        <v-text-field label="Senha:" v-model="form.password" variant="outlined"
+                            @change="form.validate('password')" type="password"
+                            autocomplete="new-password"></v-text-field>
+                        <span v-if="form.invalid('password')" class="text-base text-red-500">
+                            {{ form.errors.password }}
+                        </span>
+                    </v-container>
 
-            <div class="mt-4">
-                <!-- {{ $page.props.auth.user. }} -->
-                <InputLabel for="type" value="Perfil" class="text-white" />
-                <select v-model="form.type"
-                    class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm">
-                    <option value="">selecione</option>
-                    <option value="T" v-if="$page.props.auth.user.type === 'T'">Administrador da TI</option>
-                    <option value="S" v-if="$page.props.auth.user.type === 'T'">Administrador do sistema</option>
-                    <option value="A" v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">Atendente</option>
-                </select>
-                <InputError class="mt-2" :message="form.errors.type" />
-            </div>
+                    <v-container>
+                        <v-text-field label="Confirme a Senha:" v-model="form.password_confirmation" variant="outlined"
+                            @change="form.validate('password_confirmation')" type="password"
+                            autocomplete="new-password"></v-text-field>
+                        <span v-if="form.invalid('password_confirmation')" class="text-base text-red-500">
+                            {{ form.errors.password_confirmation }}
+                        </span>
+                    </v-container>
 
-            <div class="mt-4">
-                <InputLabel for="cpf" value="CPF" class="text-white" />
-                <TextInput id="cpf" v-model="form.cpf" type="text" class="mt-1 block w-full" autofocus
-                    v-mask="'###.###.###-##'" autocomplete="cpf" @change="form.validate('cpf')" />
-                <span v-if="form.invalid('description')" class="text-base text-red-500">
-                    {{ form.errors.description }}
-                </span>
-                <InputError class="mt-2" :message="form.errors.cpf" />
-            </div>
+                    <v-container>
+                        <!-- {{ $page.props.auth.user. }} -->
+                        <InputLabel for="type" value="Perfil" class="text-white" />
+                        <select v-model="form.type" class="border mt-1 block w-full bg-slate-50 rounded-md shadow-sm">
+                            <option value="">selecione</option>
+                            <option value="T" v-if="$page.props.auth.user.type === 'T'">Administrador da TI</option>
+                            <option value="S" v-if="$page.props.auth.user.type === 'T'">Administrador do sistema
+                            </option>
+                            <option value="A"
+                                v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
+                                Atendente</option>
+                        </select>
+                        <InputError class="mt-2" :message="form.errors.type" />
+                    </v-container>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Senha" class="text-white" />
-                <TextInput id="password" v-model="form.password" type="password" class="mt-1 block w-full"
-                    autocomplete="new-password" />
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
+                    <v-container>
+                        <InputLabel for="active" value="active" class="text-white" />
+                        <select id="active" v-model="form.active"
+                            class="border mt-1 block w-full bg-slate-50 rounded-md shadow-sm" disabled autofocus>
+                            <option value="S">Ativo</option>
+                            <option value="N">Desativado</option>
+                        </select>
+                    </v-container>
 
-            <div class="mt-4">
-                <InputLabel for="password_confirmation" value="Confirme a Senha" class="text-white" />
-                <TextInput id="password_confirmation" v-model="form.password_confirmation" type="password"
-                    class="mt-1 block w-full" autocomplete="new-password" />
-                <InputError class="mt-2" :message="form.errors.password_confirmation" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel for="active" value="active" class="text-white" />
-                <select id="active" v-model="form.active" class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm"
-                    disabled autofocus>
-                    <option value="S">Ativo</option>
-                    <option value="N">Desativado</option>
-                </select>
-            </div>
-
-            <div v-if="$page.props.jetstream.hasTermsAndPrivacyPolicyFeature" class="mt-4">
-                <InputLabel for="terms">
-                    <div class="flex items-center">
-                        <Checkbox id="terms" v-model:checked="form.terms" name="terms" />
-
-                        <div class="ms-2 text-white">
-                            Estou de acordo com <a target="_blank" :href="route('terms.show')"
-                                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Terms
-                                of Service</a> and <a target="_blank" :href="route('policy.show')"
-                                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Privacy
-                                Policy</a>
-                        </div>
-                    </div>
-                    <InputError class="mt-2" :message="form.errors.terms" />
-                </InputLabel>
-            </div>
-
-            <div class="flex items-center justify-between mt-4 ">
-                <Link :href="route('users.index')" class="m-4 text-white text">Voltar</Link>
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Registrar
-                </PrimaryButton>
-            </div>
-        </form>
-    </AuthenticationCard>
+                    <v-container class="flex items-center justify-between mt-4 ">
+                        <Link :href="route('users.index')"
+                            class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">
+                        Voltar</Link>
+                        <v-btn type="submit" class="ms-4">
+                            Registrar
+                        </v-btn>
+                    </v-container>
+                </form>
+            </v-card>
+        </div>
+    </AppLayout>
 </template>

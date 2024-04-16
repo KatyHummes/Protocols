@@ -6,6 +6,18 @@ const props = defineProps({
     audit: Object,
 });
 
+const translateType = (type) => {
+    switch (type) {
+        case 'T':
+            return 'Administrador da TI';
+        case 'S':
+            return 'Administrador do sistema';
+        case 'A':
+            return 'Atendente';
+        default:
+            return 'Desconhecido';
+    }
+};
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 </script>
 

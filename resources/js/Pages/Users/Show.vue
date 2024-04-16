@@ -4,10 +4,8 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
-import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 
 const toast = useToast();
 const props = defineProps({
@@ -62,23 +60,33 @@ const translateActive = (active) => {
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <v-container>
                         <form @submit.prevent="submit">
-                            <div>
-                                <InputLabel for="name" value="Nome" class="text-gray-900" />
-                                <TextInput id="name" v-model="form.name" type="text" class="mt-1 block w-full" required
-                                    autofocus autocomplete="name" />
-                                <InputError class="mt-2" :message="form.errors.name" />
-                            </div>
+                            <v-container>
+                                <v-text-field label="Nome:" v-model="form.name" variant="outlined"
+                                    @change="form.validate('name')"></v-text-field>
+                                <span v-if="form.invalid('name')" class="text-base text-red-500">
+                                    {{ form.errors.name }}
+                                </span>
+                            </v-container>
 
-                            <div class="mt-4">
-                                <InputLabel for="email" value="Email" class="text-gray-900" />
-                                <TextInput id="email" v-model="form.email" type="email" class="mt-1 block w-full"
-                                    disabled autocomplete="username" />
-                                <InputError class="mt-2" :message="form.errors.email" />
-                            </div>
+                            <v-container>
+                                <v-text-field label="Email:" v-model="form.email" variant="outlined" disabled
+                                    @change="form.validate('email')"></v-text-field>
+                                <span v-if="form.invalid('email')" class="text-base text-red-500">
+                                    {{ form.errors.email }}
+                                </span>
+                            </v-container>
 
-                            <div class="mt-4">
+                            <v-container>
+                                <v-text-field label="CPF:" v-model="form.cpf" variant="outlined" disabled
+                                v-mask="'###.###.###-##'" @change="form.validate('cpf')"></v-text-field>
+                                <span v-if="form.invalid('cpf')" class="text-base text-red-500">
+                                    {{ form.errors.cpf }}
+                                </span>
+                            </v-container>
+
+                            <v-container class="mt-4">
                                 <InputLabel for="type" value="Perfil" class="text-gray-900" />
-                                <select v-model="form.type" class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm">
+                                <select v-model="form.type" @change="form.validate('type')" class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm">
                                     <option value="">selecione</option>
                                     <option value="T" v-if="$page.props.auth.user.type === 'T'">Administrador da TI
                                     </option>
@@ -88,20 +96,12 @@ const translateActive = (active) => {
                                         v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
                                         Atendente</option>
                                 </select>
-                                <InputError class="mt-2" :message="form.errors.type" />
-                            </div>
-
-                            <div class="mt-4">
-                                <InputLabel for="cpf" value="CPF" class="text-gray-900" />
-                                <TextInput id="cpf" v-model="form.cpf" type="text" class="mt-1 block w-full" disabled
-                                    v-mask="'###.###.###-##'" autocomplete="cpf" @change="form.validate('cpf')" />
-                                <span v-if="form.invalid('description')" class="text-base text-red-500">
-                                    {{ form.errors.description }}
+                                <span v-if="form.invalid('type')" class="text-base text-red-500">
+                                    {{ form.errors.type }}
                                 </span>
-                                <InputError class="mt-2" :message="form.errors.cpf" />
-                            </div>
+                            </v-container>
 
-                            <div class="mt-4">
+                            <v-container class="mt-4">
                                 <InputLabel for="active" value="active" class="text-gray-900" />
                                 <select id="active" v-model="form.active"
                                     class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm" autofocus>
@@ -109,16 +109,15 @@ const translateActive = (active) => {
                                     <option value="S">Ativo</option>
                                     <option value="N">Desativado</option>
                                 </select>
-                            </div>
+                            </v-container>
 
                             <div class="flex items-center justify-between mt-4 ">
                                 <Link :href="route('users.index')"
                                     class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">
                                 Voltar</Link>
-                                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }"
-                                    :disabled="form.processing">
+                                <v-btn type="submit" class="ms-4">
                                     Salvar
-                                </PrimaryButton>
+                                </v-btn>
                             </div>
 
                         </form>

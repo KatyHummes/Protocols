@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, defineProps } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
@@ -22,7 +22,7 @@ const translateUser = (type) => {
 };
 
 const translateEvent = (event) => {
-    switch(event) {
+    switch (event) {
         case 'created':
             return 'criado'
         case 'updated':
@@ -30,9 +30,40 @@ const translateEvent = (event) => {
         case 'deleted':
             return 'excluído';
         default:
-            return 'Desconhecido'; 
+            return 'Desconhecido';
     }
 }
+// Filtros e paginação
+const search = ref('');
+const page = ref(1);
+const itemsPerPage = 10;
+
+const filteredaudits = computed(() => {
+    const searchTerm = search.value.toLowerCase().trim();
+    return props.audits.filter(audit => {
+        const userNameTranslated = audit.user.name.toLowerCase().includes(searchTerm);
+        const userTypeTranslated = translateUser(audit.user.type).toLowerCase().includes(searchTerm);
+        const eventTranslated = translateEvent(audit.event).toLowerCase().includes(searchTerm);
+        const auditableId = audit.auditable_id ? audit.auditable_id.toString().toLowerCase().includes(searchTerm) : false;
+
+        return userNameTranslated || userTypeTranslated || eventTranslated || auditableId;
+    });
+});
+
+
+const displayedaudits = computed(() => {
+    const start = (page.value - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredaudits.value.slice(start, end);
+});
+
+const pageCount = computed(() => {
+    return Math.ceil(filteredaudits.value.length / itemsPerPage);
+});
+
+const updatePage = (newPage) => {
+    page.value = newPage;
+};
 </script>
 
 <template>
@@ -46,7 +77,12 @@ const translateEvent = (event) => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <!-- <div class="font-bold text-center">{{ audits }}</div> -->
-
+                    <v-card title="Auditorias" flat>
+                        <template v-slot:text>
+                            <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
+                                variant="outlined" hide-details single-line></v-text-field>
+                        </template>
+                    </v-card>
                     <v-table>
                         <thead>
                             <tr>
@@ -58,7 +94,7 @@ const translateEvent = (event) => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="audit in audits" :key="audit.id">
+                            <tr v-for="audit in displayedaudits" :key="audit.id">
                                 <td>{{ audit.id }}</td>
                                 <td>{{ translateUser(audit.user.type) }}</td>
                                 <td>{{ audit.user.name }}</td>
@@ -78,6 +114,9 @@ const translateEvent = (event) => {
                             </tr>
                         </tbody>
                     </v-table>
+                    <div class="text-center pt-2">
+                        <v-pagination v-model="page" :length="pageCount" @input="updatePage"></v-pagination>
+                    </div>
                 </div>
             </div>
         </div>

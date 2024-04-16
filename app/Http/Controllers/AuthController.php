@@ -74,7 +74,6 @@ class AuthController extends Controller
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-
             'type' => $request->type,
             'cpf' => $request->cpf,
             'active' => $request->active
