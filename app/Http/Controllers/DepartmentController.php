@@ -55,6 +55,7 @@ class DepartmentController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'user_id' => ['required', 'exists:users,id'], // verificar se o usuário existe
         ]);
 
         $department = Department::findOrFail($id);

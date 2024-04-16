@@ -59,8 +59,13 @@ const submitAccess = () => formAccess.submit({
             position: 'top-right',
         });
     },
+    onError: () => {
+        toast.open({
+            message: 'Erro ao liberar o acesso!',
+            type: 'error',
+        });
+    },
 });
-
 
 // Modal para confirmar a remoção de um acesso
 const accessId = ref()
@@ -104,8 +109,8 @@ const closeDeleteAccessConfirmModal = () => {
 
 // Função para formatar a data da criação do acesso
 const formatDate = (dateString) => {
-  const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
 };
 </script>
 
@@ -136,11 +141,12 @@ const formatDate = (dateString) => {
                 <v-card title="Usuários" flat>
                     <form @submit.prevent="submitAccess">
                         <v-container class="flex justify-between items-center">
-                            <v-select label="Usuários" :items="avaliableUsers" item-title="name" v-model="formAccess.user_id"
-                                item-value="id" variant="outlined"></v-select>
-                            <v-btn class="m-4 p-3" type="submit"
-                                v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">Liberar
-                                Acesso</v-btn>
+                            <v-select label="Usuários" :items="avaliableUsers" item-title="name"
+                                v-model="formAccess.user_id" item-value="id" variant="outlined"></v-select>
+                            <v-btn class="m-4 p-3" type="submit" :disabled="!formAccess.user_id"
+                                v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">
+                                Liberar Acesso
+                            </v-btn>
                         </v-container>
                     </form>
                     <v-divider></v-divider>
