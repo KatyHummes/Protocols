@@ -37,4 +37,8 @@ class Protocol extends Model implements Auditable
     {
         return $this->belongsTo(Department::class);
     }
+
+    public function latestReport() {
+        return $this->hasOne(Report::class)->latest('updated_at');
+    }
 }

@@ -42,11 +42,11 @@ const filteredaudits = computed(() => {
     const searchTerm = search.value.toLowerCase().trim();
     return props.audits.filter(audit => {
         const userNameTranslated = audit.user.name.toLowerCase().includes(searchTerm);
-        const userTypeTranslated = translateUser(audit.user.type).toLowerCase().includes(searchTerm);
         const eventTranslated = translateEvent(audit.event).toLowerCase().includes(searchTerm);
-        const auditableId = audit.auditable_id ? audit.auditable_id.toString().toLowerCase().includes(searchTerm) : false;
+        const auditableTable = audit.auditable_type ? audit.auditable_type.toString().toLowerCase().includes(searchTerm) : false;
+        const auditableDate = formatDate(audit.created_at).toLowerCase().includes(searchTerm);
 
-        return userNameTranslated || userTypeTranslated || eventTranslated || auditableId;
+        return userNameTranslated || auditableDate || eventTranslated || auditableTable;
     });
 });
 
@@ -64,6 +64,14 @@ const pageCount = computed(() => {
 const updatePage = (newPage) => {
     page.value = newPage;
 };
+
+const formatDate = (dateString) => {
+    const options = {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: false
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+};
 </script>
 
 <template>
@@ -77,7 +85,7 @@ const updatePage = (newPage) => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-4">
                     <!-- <div class="font-bold text-center">{{ audits }}</div> -->
-                    <v-card title="Auditorias" flat>
+                    <v-card flat>
                         <template v-slot:text>
                             <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
                                 variant="outlined" hide-details single-line></v-text-field>
@@ -87,18 +95,22 @@ const updatePage = (newPage) => {
                         <thead>
                             <tr>
                                 <th class="text-left">Id</th>
-                                <th class="text-left">Tipo de usuário</th>
                                 <th class="text-left">Nome do úsuario</th>
                                 <th class="text-left">Evento</th>
+                                <th class="text-left">Data e horário</th>
+                                <th class="text-left">Tabela</th>
+                                <th class="text-left">Id Auditado</th>
                                 <th class="text-left">Ação</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="audit in displayedaudits" :key="audit.id">
                                 <td>{{ audit.id }}</td>
-                                <td>{{ translateUser(audit.user.type) }}</td>
                                 <td>{{ audit.user.name }}</td>
                                 <td>{{ translateEvent(audit.event) }}</td>
+                                <td>{{ formatDate(audit.created_at) }}</td>
+                                <td>{{ audit.auditable_type }}</td>
+                                <td>{{ audit.auditable_id }}</td>
                                 <td>
                                     <Link :href="route('audit.show', audit.id)">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"

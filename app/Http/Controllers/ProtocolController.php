@@ -19,17 +19,20 @@ class ProtocolController extends Controller
     public function index()
     {
         $userId = Auth::id();
-
         $allowedDepartments = Access::where('user_id', $userId)->pluck('department_id');
 
         $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
         $peoples = People::get(['id', 'name']);
-        $protocols = Protocol::with('people')->whereIn('department_id', $allowedDepartments)->get();
+
+        // Modificação para incluir o último relatório e pessoa associada
+        $protocols = Protocol::with(['people', 'latestReport', 'department'])
+            ->whereIn('department_id', $allowedDepartments)
+            ->get();
 
         return Inertia::render('Protocols', [
             'protocols' => $protocols,
             'peoples' => $peoples,
-            'departments' => $departments,
+            'departments' => $departments
         ]);
     }
 
@@ -63,28 +66,28 @@ class ProtocolController extends Controller
 
     // Editar protocolos
     public function show($id)
-{
-    $userId = Auth::id();
-    
-    $allowedDepartments = Access::where('user_id', $userId)->pluck('department_id');
+    {
+        $userId = Auth::id();
 
-    $protocol = Protocol::with('people', 'docattachs')
-        ->whereIn('department_id', $allowedDepartments)
-        ->findOrFail($id);
+        $allowedDepartments = Access::where('user_id', $userId)->pluck('department_id');
 
-    // Obter apenas os departamentos permitidos para o usuário
-    $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
-    $peoples = People::get(['id', 'name']);
-    $reports = Report::where('protocol_id', $id)->get();
+        $protocol = Protocol::with('people', 'docattachs')
+            ->whereIn('department_id', $allowedDepartments)
+            ->findOrFail($id);
 
-    return Inertia::render('EditProtocol', [
-        'protocol' => $protocol,
-        'departments' => $departments,
-        'peoples' => $peoples,
-        'reports' => $reports,
-    ]);
-}
-    
+        // Obter apenas os departamentos permitidos para o usuário
+        $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
+        $peoples = People::get(['id', 'name']);
+        $reports = Report::where('protocol_id', $id)->get();
+
+        return Inertia::render('EditProtocol', [
+            'protocol' => $protocol,
+            'departments' => $departments,
+            'peoples' => $peoples,
+            'reports' => $reports,
+        ]);
+    }
+
 
     public function update(ProtocolRequest $request, $id)
     {
@@ -98,15 +101,17 @@ class ProtocolController extends Controller
             'term' => $request->term,
         ]);
 
-        if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
-                $fileName = time() . '_' . $file->getClientOriginalName();
-                $file->storeAs('public', $fileName);
+        if ($protocol) {
+            if ($request->hasFile('files')) {
+                foreach ($request->file('files') as $file) {
+                    $fileName = time() . '_' . $file->getClientOriginalName();
+                    $file->storeAs('public', $fileName);
 
-                $protocol->docattach()->updateOrCreate(
-                    ['protocol_id' => $protocol->id],
-                    ['file' => $fileName]
-                );
+                    DocAttach::create([
+                        'protocol_id' => $protocol->id,
+                        'file' => $fileName,
+                    ]);
+                }
             }
         }
     }

@@ -103,7 +103,7 @@ const submit = () => form.submit({
                 </div>
                 <v-card-text>
                     <v-card title="Departamentos" flat>
-                        <v-card title="Pessoas" flat>
+                        <v-card flat>
                             <template v-slot:text>
                                 <v-text-field v-model="search" label="Search" prepend-inner-icon="mdi-magnify"
                                     variant="outlined" hide-details single-line></v-text-field>

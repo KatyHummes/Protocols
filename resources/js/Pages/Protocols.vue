@@ -14,6 +14,7 @@ const props = defineProps({
     peoples: Array,
     protocols: Array,
     departments: Array,
+    reports: Array,
 });
 
 const form = useForm('post', route('protocol.store'), {
@@ -61,7 +62,9 @@ const filteredProtocols = computed(() => {
         return (
             protocol.people.name.toLowerCase().includes(searchTerm) ||
             protocol.date.toLowerCase().includes(searchTerm) ||
-            protocol.id.toString().toLowerCase().includes(searchTerm)
+            protocol.id.toString().toLowerCase().includes(searchTerm) ||
+            protocol.department.name.toLowerCase().includes(searchTerm) ||
+            getStatusText(protocol.latest_report).toLowerCase().includes(searchTerm) 
         );
     });
 });
@@ -109,6 +112,26 @@ const deleteProtocols = () => {
     });
 }
 
+const getStatusColor = (report) => {
+    if (!report) return 'gray';
+    switch (report.status) {
+        case 'A': return 'red';
+        case 'E': return 'yellow';
+        case 'S': return 'green'; 
+        default: return 'gray'; 
+    }
+};
+
+const getStatusText = (report) => {
+    if (!report) return 'Não Iniciado';
+    switch (report.status) {
+        case 'A': return 'Aberto';
+        case 'E': return 'Em Atendimento';
+        case 'S': return 'Solucionado';
+        default: return 'Desconhecido'; 
+    }
+};
+
 // Calcular data final
 const calculateFinalDate = (startDate, term) => {
     const startDateObj = new Date(startDate);
@@ -119,8 +142,8 @@ const calculateFinalDate = (startDate, term) => {
 
 // Função para formatar a data da tabela
 const formatDate = (dateString) => {
-  const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
 const downloadPDF = () => {
@@ -180,7 +203,7 @@ const downloadPDF = () => {
 
                         <v-col cols="auto" class="flex justify-between mb-5">
                             <v-dialog transition="dialog-top-transition" max-width="500">
-                                
+
                                 <template v-slot:activator="{ props: activatorProps }">
                                     <v-btn size="large" v-bind="activatorProps">Criar Protocolo</v-btn>
                                 </template>
@@ -193,7 +216,8 @@ const downloadPDF = () => {
                                                 <v-select label="Departamento" :items="departments" item-title="name"
                                                     item-value="id" variant="outlined" v-model="form.department_id"
                                                     @change="form.validate('department_id')"></v-select>
-                                                <span v-if="form.invalid('department_id')" class="text-base text-red-500">
+                                                <span v-if="form.invalid('department_id')"
+                                                    class="text-base text-red-500">
                                                     {{ form.errors.department_id }}
                                                 </span>
                                             </v-container>
@@ -281,27 +305,34 @@ const downloadPDF = () => {
                                     <th class="text-left">Data de Abertura</th>
                                     <th class="text-left">Prazo</th>
                                     <th class="text-left">Data Final</th>
+                                    <th class="text-left">Departamento</th>
+                                    <th class="text-left">Situação</th>
                                     <th class="text-left">Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="protocol in displayedProtocols" :key="protocol.name">
+                                <tr v-for="protocol in displayedProtocols" :key="protocol.id">
                                     <td>{{ protocol.id }}</td>
                                     <td>{{ protocol.people.name }}</td>
                                     <td>{{ formatDate(protocol.date) }}</td>
                                     <td>{{ protocol.term }}</td>
                                     <td>{{ calculateFinalDate(protocol.date, protocol.term) }}</td>
+                                    <td>{{ protocol.department.name }}</td>
+                                    <td>
+                                        <span :style="{ color: getStatusColor(protocol.latest_report) }">●</span>
+                                        {{ getStatusText(protocol.latest_report) }}
+                                    </td>
                                     <td>
                                         <div class="flex gap-4">
                                             <Link :href="route('protocol.show', protocol.id)">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                    stroke-width="1.5" stroke="currentColor"
-                                                    class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                                </svg>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor"
+                                                class="w-6 h-6 hover:scale-125 ease-in-out hover:stroke-green-500">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                            </svg>
                                             </Link>
 
                                             <button size="small" @click="openDeleteModal(protocol.id)">
