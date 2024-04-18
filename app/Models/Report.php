@@ -15,6 +15,15 @@ class Report extends Model
         'status',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($report) {
+            $report->status = 'A';
+        });
+    }
+
     public function protocol()
     {
         return $this->belongsTo(Protocol::class);

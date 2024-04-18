@@ -46,7 +46,13 @@ class ProtocolController extends Controller
             'people_id' => $request->people_id,
             'description' => $request->description,
             'date' => $selectedDate,
-            'term' => $request->term,
+            'term' => $request->term
+        ]);
+
+        Report::create([
+            'protocol_id' => $protocol->id,
+            // 'description' => '',
+            // 'status' => 'A'
         ]);
 
         if ($protocol) {

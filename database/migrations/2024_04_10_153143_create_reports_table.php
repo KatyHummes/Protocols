@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('protocol_id');
-            $table->longText('description');
+            $table->text('description')->nullable();
             $table->char('status', 1);
             $table->timestamps();
             $table->foreign('protocol_id')->references('id')->on('protocols')->onDelete('cascade');
