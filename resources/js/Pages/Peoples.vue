@@ -129,7 +129,7 @@ const deletePeople = () => {
                         <v-col cols="auto" class="flex justify-center mb-5">
                             <v-dialog max-width="500">
                                 <template v-slot:activator="{ props: activatorProps }">
-                                    <v-btn v-bind="activatorProps" size="large" color="primary" text="Incluir Pessoas"
+                                    <v-btn v-bind="activatorProps" color="primary" text="Incluir Pessoas"
                                         variant="flat"></v-btn>
                                 </template>
 

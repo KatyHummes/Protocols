@@ -69,7 +69,7 @@ const submit = () => form.submit({
                     <v-tab value="one">Departamentos</v-tab>
                     <v-dialog transition="dialog-top-transition" max-width="500">
                         <template v-slot:activator="{ props: activatorProps }">
-                            <v-btn size="large" v-bind="activatorProps"
+                            <v-btn v-bind="activatorProps"
                                 v-if="$page.props.auth.user.type === 'T' || $page.props.auth.user.type === 'S'">Criar
                                 Departamento</v-btn>
                         </template>

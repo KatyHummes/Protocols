@@ -205,7 +205,7 @@ const downloadPDF = () => {
                             <v-dialog transition="dialog-top-transition" max-width="500">
 
                                 <template v-slot:activator="{ props: activatorProps }">
-                                    <v-btn size="large" v-bind="activatorProps">Criar Protocolo</v-btn>
+                                    <v-btn v-bind="activatorProps">Criar Protocolo</v-btn>
                                 </template>
 
                                 <template v-slot:default="{ isActive }">
