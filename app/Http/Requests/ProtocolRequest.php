@@ -23,12 +23,12 @@ class ProtocolRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'department_id' => ['required',],
             'date' => ['required', 'date', new DataPrazoRule()],
             'description' => ['required'],
             'term' => ['required'],
             'people_id' => ['required'],
-            'files.*' => ['max:3000', 'mimes:pdf,jpg,jpeg,png'],
-            'files' => ['max:5', ] 
+            'files.*' => 'mimes:pdf,jpg,jpeg,png|max:3072'
         ];
     }
 
@@ -38,8 +38,8 @@ class ProtocolRequest extends FormRequest
             'required' => 'Este campo é obrigatório',
             'date' => 'Deve ser uma data válida',
             'DataPrazoRule' => 'O atributo não atende aos requisitos de validação.',
-            'mimes' => 'O arquivo deve ser do tipo: pdf, jpg, jpeg ou png',
-            'max' => 'O arquivo não pode ser maior que 3MB',
+            'files.*.mimes' => 'O arquivo deve ser do tipo: pdf, jpg, jpeg ou png',
+            'files.*.max' => 'O arquivo não pode ser maior que 3MB',
             'files.max' => 'Não é permitido enviar mais de 5 arquivos'
         ];
     }

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, defineProps } from 'vue';
+import { ref, computed, defineProps, watch } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { useForm } from 'laravel-precognition-vue-inertia';
 import { useToast } from 'vue-toast-notification';
@@ -34,14 +34,64 @@ const submit = () => form.submit({
             position: 'top-right',
         });
     },
-    onError: () => {
+    onError: (errors) => {
         toast.open({
-            message: 'Erro ao criar protocolo!',
+            message: errors.files ? errors.files.join(', ') : 'Erro ao criar protocolo!',
             type: 'error',
             position: 'top-right',
         });
     },
 });
+
+function validateFiles() {
+    const validTypes = ['application/pdf', 'image/png', 'image/jpeg'];
+    const maxFiles = 5;
+    const maxSize = 3 * 1024 * 1024; // 3MB em bytes
+
+    if (form.files.length > maxFiles) {
+        console.log('maxFiles')
+        toast.open({
+            message: `Você pode anexar no máximo ${maxFiles} arquivos.`,
+            type: 'error',
+            position: 'top-right',
+            duration: 10000
+        });
+        form.files = []
+        form.errors.files = [`Número máximo de ${maxFiles} arquivos excedido.`];
+        return false;
+    }
+
+    for (let file of form.files) {
+        if (!validTypes.includes(file.type)) {
+            console.log('maxFiles')
+            toast.open({
+                message: 'Apenas arquivos PDF, PNG, JPG ou JPEG são permitidos.',
+                type: 'error',
+                position: 'top-right',
+                duration: 10000
+            });
+            form.files = []
+            form.errors.files = ['Tipo de arquivo inválido.'];
+            return false;
+        }
+
+        if (file.size > maxSize) {
+            toast.open({
+                message: 'Cada arquivo deve ter no máximo 5MB.',
+                type: 'error',
+                position: 'top-right',
+                duration: 10000
+            });
+            form.files = []
+            form.errors.files = ['Um ou mais arquivos excedem o limite de 5MB.'];
+            return false;
+        }
+    }
+
+    form.errors.files = [];
+
+    return true;
+}
 
 // configuração de datas
 const isMenuOpen = ref(false);
@@ -64,7 +114,7 @@ const filteredProtocols = computed(() => {
             protocol.date.toLowerCase().includes(searchTerm) ||
             protocol.id.toString().toLowerCase().includes(searchTerm) ||
             protocol.department.name.toLowerCase().includes(searchTerm) ||
-            getStatusText(protocol.latest_report).toLowerCase().includes(searchTerm) 
+            getStatusText(protocol.latest_report).toLowerCase().includes(searchTerm)
         );
     });
 });
@@ -117,8 +167,8 @@ const getStatusColor = (report) => {
     switch (report.status) {
         case 'A': return 'red';
         case 'E': return 'yellow';
-        case 'S': return 'green'; 
-        default: return 'gray'; 
+        case 'S': return 'green';
+        default: return 'gray';
     }
 };
 
@@ -128,7 +178,7 @@ const getStatusText = (report) => {
         case 'A': return 'Aberto';
         case 'E': return 'Em Atendimento';
         case 'S': return 'Solucionado';
-        default: return 'Desconhecido'; 
+        default: return 'Desconhecido';
     }
 };
 
@@ -203,11 +253,9 @@ const downloadPDF = () => {
 
                         <v-col cols="auto" class="flex justify-between mb-5">
                             <v-dialog transition="dialog-top-transition" max-width="500">
-
                                 <template v-slot:activator="{ props: activatorProps }">
                                     <v-btn v-bind="activatorProps">Criar Protocolo</v-btn>
                                 </template>
-
                                 <template v-slot:default="{ isActive }">
                                     <form @submit.prevent="submit">
                                         <v-card title="Criar Protocolo">
@@ -263,13 +311,13 @@ const downloadPDF = () => {
                                                     {{ form.errors.description }}
                                                 </span>
                                             </v-container>
-
+                                            {{ form.files }}
                                             <v-container>
                                                 <v-file-input label="Anexar Documentos" multiple variant="outlined"
-                                                    @change="form.validate('files')"
+                                                    @change="() => form.validate('files'), validateFiles()"
                                                     v-model="form.files"></v-file-input>
                                                 <span v-if="form.invalid('files')" class="text-base text-red-500">
-                                                    {{ form.errors.files }}
+                                                    {{ form.errors }}
                                                 </span>
                                             </v-container>
 
