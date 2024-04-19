@@ -311,11 +311,10 @@ const downloadPDF = () => {
                                                     {{ form.errors.description }}
                                                 </span>
                                             </v-container>
-                                            {{ form.files }}
+                                            <!-- {{ form.files }} -->
                                             <v-container>
                                                 <v-file-input label="Anexar Documentos" multiple variant="outlined"
-                                                    @change="() => form.validate('files'), validateFiles()"
-                                                    v-model="form.files"></v-file-input>
+                                                    @change="validateFiles()" v-model="form.files"></v-file-input>
                                                 <span v-if="form.invalid('files')" class="text-base text-red-500">
                                                     {{ form.errors }}
                                                 </span>

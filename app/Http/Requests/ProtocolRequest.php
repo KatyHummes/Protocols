@@ -28,7 +28,7 @@ class ProtocolRequest extends FormRequest
             'description' => ['required'],
             'term' => ['required'],
             'people_id' => ['required'],
-            'files.*' => 'mimes:pdf,jpg,jpeg,png|max:3072'
+            'files.*' => 'file|mimes:pdf,jpg,jpeg,png|max:3072'
         ];
     }
 
