@@ -39,7 +39,7 @@ class ProtocolController extends Controller
 
     public function store(ProtocolRequest $request)
     {
-        dd($request->all());
+        // dd($request->all());
         $selectedDate = Carbon::parse($request->date)->format('Y-m-d');
         $protocol = Protocol::create([
             'department_id' => $request->department_id,
