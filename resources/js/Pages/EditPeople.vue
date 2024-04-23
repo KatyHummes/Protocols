@@ -23,25 +23,46 @@ const form = useForm('put', route('people.update', props.people.id), {
     number: props.people.number,
     complement: props.people.complement,
 });
- const submit = () => {
-    form.put(route('people.update', props.people.id), {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-            toast.open({
-                message: 'Pessoa atualizada com sucesso!',
-                type: 'success',
-                position: 'top-right',
-            });
-        },
-        onError: () => {
-            toast.open({
-                message: 'Erro ao atualizar pessoa!',
-                type: 'error',
-            });
-        },
+
+const submit = () => {
+  if (!validateBirthDate()) {
+    toast.open({
+      message: 'Por favor, corrija os erros antes de submeter.',
+      type: 'error',
+      position: 'top-right',
     });
+    return;
+  }
+
+  form.submit({
+    preserveScroll: true,
+    onSuccess: () => {
+      form.reset();
+      toast.open({
+        message: 'Pessoa atualizada com sucesso!',
+        type: 'success',
+        position: 'top-right',
+      });
+    },
+    onError: () => {
+      toast.open({
+        message: 'Erro ao atualizar pessoa!',
+        type: 'error',
+        position: 'top-right',
+      });
+    },
+  });
 };
+
+const validateBirthDate = () => {
+  if (!form.birth) {
+    form.errors.birth = 'O campo data de nascimento é obrigatório.';
+    return false;
+  } else {
+    form.errors.birth = null;
+    return true;
+  }
+}
 
 // configuração de datas
 const isMenuOpen = ref(false);
@@ -83,7 +104,7 @@ watch(selectedDate, (newValue, oldValue) => {
                                         <v-text-field label="Selecione a data" :model-value="formattedDate"
                                             v-bind="props" variant="outlined"></v-text-field>
                                     </template>
-                                    <v-date-picker v-model="form.birth" @change="form.validate('birth')"></v-date-picker>
+                                    <v-date-picker v-model="form.birth" @change="validateBirthDate"></v-date-picker>
                                 </v-menu>
                                 <span v-if="form.invalid('birth')" class="text-base text-red-500">
                                     {{ form.errors.birth }}
