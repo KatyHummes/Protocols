@@ -202,9 +202,14 @@ const generatePDF = () => {
                                     <h1 class="m-4">Pré Visualização dos Arquivos:</h1>
                                     <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 m-4">
                                         <div v-for="docattach in protocol.docattachs"
-                                            class="mb-4 rounded-2xl border-slate-100 border-4 bg-white">
-                                            <img :src="'../storage/' + docattach.file" alt="documentos anexados"
+                                            class="mb-4 rounded-2xl border-slate-50 border-4 bg-white">
+                                            <object :data="'/storage/' + docattach.file" type="application/pdf"
                                                 class="rounded-2xl fixed-size-img">
+                                                <!-- Mensagem de fallback caso o PDF não possa ser exibido -->
+                                                <p>Seu navegador não pode exibir este PDF. Por favor, <a
+                                                        :href="'/storage/' + docattach.file" target="_blank">clique
+                                                        aqui</a> para baixar o arquivo.</p>
+                                            </object>
                                         </div>
                                     </div>
 
