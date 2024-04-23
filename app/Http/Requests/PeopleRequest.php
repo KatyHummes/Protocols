@@ -36,6 +36,7 @@ class PeopleRequest extends FormRequest
     {
         return [
             'required' => 'Este campo é obrigatório',
+            'birth.required' => 'O campo data de nascimento é obrigatório.',
             'cpf.unique' => 'CPF já cadastrado.',
             'AgeRequirement' => 'A idade mínima é de 16 anos.',
             'ValidCpf' => 'CPF inválido.',

@@ -91,7 +91,7 @@ watch(selectedDate, (newValue, oldValue) => {
                             </div>
                             <div>
                                 <v-text-field label="cpf:*" v-model="form.cpf" variant="outlined"
-                                    v-mask="'###.###.###-##'" @change="form.validate('cpf')" disabled></v-text-field>
+                                    v-mask="'###.###.###-##'" @change="form.validate('cpf')" ></v-text-field>
                                 <span v-if="form.invalid('cpf')" class="text-base text-red-500">
                                     {{ form.errors.cpf }}
                                 </span>
