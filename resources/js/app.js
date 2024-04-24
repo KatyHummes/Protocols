@@ -12,11 +12,16 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import { md3 } from 'vuetify/blueprints'
 import VueTheMask from 'vue-the-mask'
+import { pt } from 'vuetify/locale'
 
 const vuetify = createVuetify({
   components,
   directives,
   blueprint: md3,
+  locale: {
+    locale: 'pt',
+    messages: { pt }
+  }
 })
 
 
