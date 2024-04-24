@@ -11,6 +11,7 @@ use App\Models\Protocol;
 use Carbon\Carbon;
 use App\Models\Report;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 // Criar protocolos
@@ -92,6 +93,11 @@ class ProtocolController extends Controller
         ]);
     }
 
+    public function deleteAttachment($id)
+    {
+        dd($id);
+        DocAttach::destroy($id);
+    }
 
     public function update(ProtocolRequest $request, $id)
     {

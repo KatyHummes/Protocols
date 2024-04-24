@@ -7,6 +7,7 @@ import 'vue-toast-notification/dist/theme-sugar.css';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import axios from 'axios';
 
 const toast = useToast();
 
@@ -98,6 +99,18 @@ const translateStatus = (status) => {
             return 'Solucionado';
     }
 };
+
+// configurações das files 
+
+const isImage = (filename) => {
+  return /\.(jpg|jpeg|png)$/i.test(filename);
+};
+
+const deleteFile = async (attach) => {
+    await axios.delete(`/api/docattachs/${attach.id}`);
+    props.protocol.docattachs = props.protocol.docattachs.filter(a => a.id !== attach.id);
+};
+
 
 // Função para gerar o PDF
 const generatePDF = () => {
@@ -199,20 +212,6 @@ const generatePDF = () => {
                                         </span>
                                     </v-container>
 
-                                    <h1 class="m-4">Pré Visualização dos Arquivos:</h1>
-                                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 m-4">
-                                        <div v-for="docattach in protocol.docattachs"
-                                            class="mb-4 rounded-2xl border-slate-50 border-4 bg-white">
-                                            <object :data="'/storage/' + docattach.file" type="application/pdf"
-                                                class="rounded-2xl fixed-size-img">
-                                                <!-- Mensagem de fallback caso o PDF não possa ser exibido -->
-                                                <p>Seu navegador não pode exibir este PDF. Por favor, <a
-                                                        :href="'/storage/' + docattach.file" target="_blank">clique
-                                                        aqui</a> para baixar o arquivo.</p>
-                                            </object>
-                                        </div>
-                                    </div>
-
                                     <v-divider></v-divider>
                                     <div class="flex justify-between items-center">
                                         <Link :href="route('protocols.index')"
@@ -223,6 +222,30 @@ const generatePDF = () => {
                                     </div>
                                 </v-card>
                             </form>
+
+                            <h1 class="m-4">Pré-visualização dos Arquivos:</h1>
+                                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 m-4">
+                                        <div v-for="attach in protocol.docattachs" :key="attach.id"
+                                            class="mb-4 rounded-2xl border-slate-100 border-4 bg-white p-4">
+                                            <div v-if="isImage(attach.file)">
+                                                <img :src="`/storage/${attach.file}`" alt="Image Preview"
+                                                    class="max-w-full h-auto rounded">
+                                            </div>
+                                            <div v-else>
+                                                <a :href="`/storage/${attach.file}`" target="_blank">Abrir PDF</a>
+                                            </div>
+                                            <div class="flex justify-end mt-2">
+                                                <!-- <button @click="downloadFile(attach.file)"
+                                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+                                                    Baixar
+                                                </button> -->
+                                                <button @click="deleteFile(attach)"
+                                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                                    Excluir
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                         </v-window-item>
 
                         <v-window-item value="two">

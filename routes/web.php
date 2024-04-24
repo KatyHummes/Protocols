@@ -39,6 +39,7 @@ Route::middleware([
     Route::get('/editar-protocolo/{id}', [ProtocolController::class, 'show'])->name('protocol.show');
     Route::put('/editar-protocolo/{id}', [ProtocolController::class, 'update'])->name('protocol.update')->middleware([HandlePrecognitiveRequests::class]);
     Route::delete('/deletar-protocolo/{id}', [ProtocolController::class, 'destroy'])->name('protocol.destroy');
+    Route::delete('/docattachs/{id}', [ProtocolController::class, 'deleteAttachment']);
 
     // Autenticação:
     Route::get('/registro', [AuthController::class, 'create'])->name('create');
@@ -63,4 +64,8 @@ Route::middleware([
     // Auditoria:
     Route::get('/auditoria', [AuditController::class, 'index'])->name('audit.index');
     Route::get('/auditoria/{id}', [AuditController::class, 'show'])->name('audit.show');
+
+    Route::get('/test-file', function () {
+        return response()->file(storage_path('app/public/1711642365_declaracao de matricula.pdf'));
+    });
 });
