@@ -422,3 +422,9 @@ const downloadPDF = () => {
         </div>
     </Modal>
 </template>
+
+<style>
+.v-picker{
+    width: 100% !important;
+}
+</style>
