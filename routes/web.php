@@ -39,7 +39,7 @@ Route::middleware([
     Route::get('/editar-protocolo/{id}', [ProtocolController::class, 'show'])->name('protocol.show');
     Route::put('/editar-protocolo/{id}', [ProtocolController::class, 'update'])->name('protocol.update')->middleware([HandlePrecognitiveRequests::class]);
     Route::delete('/deletar-protocolo/{id}', [ProtocolController::class, 'destroy'])->name('protocol.destroy');
-    Route::delete('/docattachs/{id}', [ProtocolController::class, 'deleteAttachment']);
+    Route::delete('/api/docattachs/{id}', [ProtocolController::class, 'deleteAttachment']);
 
     // Autenticação:
     Route::get('/registro', [AuthController::class, 'create'])->name('create');

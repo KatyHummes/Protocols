@@ -95,7 +95,7 @@ class ProtocolController extends Controller
 
     public function deleteAttachment($id)
     {
-        dd($id);
+        // dd($id);
         DocAttach::destroy($id);
     }
 

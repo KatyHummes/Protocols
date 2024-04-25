@@ -103,7 +103,7 @@ const translateStatus = (status) => {
 // configurações das files 
 
 const isImage = (filename) => {
-  return /\.(jpg|jpeg|png)$/i.test(filename);
+    return /\.(jpg|jpeg|png)$/i.test(filename);
 };
 
 const deleteFile = async (attach) => {
@@ -111,6 +111,27 @@ const deleteFile = async (attach) => {
     props.protocol.docattachs = props.protocol.docattachs.filter(a => a.id !== attach.id);
 };
 
+const downloadFile = async (filename) => {
+    try {
+        const response = await axios({
+            url: `/storage/${filename}`,
+            method: 'GET',
+            responseType: 'blob',
+        });
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Erro ao baixar o arquivo:', error);
+    }
+};
 
 // Função para gerar o PDF
 const generatePDF = () => {
@@ -224,28 +245,32 @@ const generatePDF = () => {
                             </form>
 
                             <h1 class="m-4">Pré-visualização dos Arquivos:</h1>
-                                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 m-4">
-                                        <div v-for="attach in protocol.docattachs" :key="attach.id"
-                                            class="mb-4 rounded-2xl border-slate-100 border-4 bg-white p-4">
-                                            <div v-if="isImage(attach.file)">
-                                                <img :src="`/storage/${attach.file}`" alt="Image Preview"
-                                                    class="max-w-full h-auto rounded">
-                                            </div>
-                                            <div v-else>
-                                                <a :href="`/storage/${attach.file}`" target="_blank">Abrir PDF</a>
-                                            </div>
-                                            <div class="flex justify-end mt-2">
-                                                <!-- <button @click="downloadFile(attach.file)"
-                                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
-                                                    Baixar
-                                                </button> -->
-                                                <button @click="deleteFile(attach)"
-                                                    class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                                                    Excluir
-                                                </button>
-                                            </div>
-                                        </div>
+                            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 m-4">
+                                <div v-for="attach in protocol.docattachs" :key="attach.id"
+                                    class="mb-4 rounded-2xl border-slate-100 border-4 bg-white p-4">
+                                    <div v-if="isImage(attach.file)">
+                                        <!-- {{ attach.file }} -->
+                                        <img :src="`../../../storage/${attach.file}`" alt="Image Preview"
+                                            class="max-w-full h-auto rounded">
+
                                     </div>
+                                    <div v-else class="flex items-center justify-center">
+                                        <iframe :src="`../../../storage/${attach.file}`" class="w-52 h-64 object-cover "
+                                             frameborder="0"></iframe>
+                                    </div>
+
+                                    <div class="flex justify-end mt-2">
+                                        <button @click="downloadFile(attach.file)"
+                                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+                                            Baixar
+                                        </button>
+                                        <button @click="deleteFile(attach)"
+                                            class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                            Excluir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </v-window-item>
 
                         <v-window-item value="two">
