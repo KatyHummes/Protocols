@@ -64,8 +64,4 @@ Route::middleware([
     // Auditoria:
     Route::get('/auditoria', [AuditController::class, 'index'])->name('audit.index');
     Route::get('/auditoria/{id}', [AuditController::class, 'show'])->name('audit.show');
-
-    Route::get('/test-file', function () {
-        return response()->file(storage_path('app/public/1711642365_declaracao de matricula.pdf'));
-    });
 });

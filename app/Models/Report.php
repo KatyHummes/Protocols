@@ -16,13 +16,15 @@ class Report extends Model
     ];
 
     protected static function boot()
-    {
-        parent::boot();
+{
+    parent::boot();
 
-        static::creating(function ($report) {
+    static::creating(function ($report) {
+        if (empty($report->status)) {
             $report->status = 'A';
-        });
-    }
+        }
+    });
+}
 
     public function protocol()
     {

@@ -62,6 +62,38 @@ watch(selectedDate, (newValue, oldValue) => {
     isMenuOpen.value = false
 });
 
+// configurações das files 
+const isImage = (filename) => {
+    return /\.(jpg|jpeg|png)$/i.test(filename);
+};
+
+const deleteFile = async (attach) => {
+    await axios.delete(`/api/docattachs/${attach.id}`);
+    props.protocol.docattachs = props.protocol.docattachs.filter(a => a.id !== attach.id);
+};
+
+const downloadFile = async (filename) => {
+    try {
+        const response = await axios({
+            url: `/storage/${filename}`,
+            method: 'GET',
+            responseType: 'blob',
+        });
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Erro ao baixar o arquivo:', error);
+    }
+};
+
 // script Acompanhamentos:
 const formReport = useForm('post', route('store.Report'), {
     protocol_id: props.protocol.id,
@@ -100,38 +132,6 @@ const translateStatus = (status) => {
     }
 };
 
-// configurações das files 
-
-const isImage = (filename) => {
-    return /\.(jpg|jpeg|png)$/i.test(filename);
-};
-
-const deleteFile = async (attach) => {
-    await axios.delete(`/api/docattachs/${attach.id}`);
-    props.protocol.docattachs = props.protocol.docattachs.filter(a => a.id !== attach.id);
-};
-
-const downloadFile = async (filename) => {
-    try {
-        const response = await axios({
-            url: `/storage/${filename}`,
-            method: 'GET',
-            responseType: 'blob',
-        });
-
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-
-        link.parentNode.removeChild(link);
-        window.URL.revokeObjectURL(url);
-    } catch (error) {
-        console.error('Erro ao baixar o arquivo:', error);
-    }
-};
 
 // Função para gerar o PDF
 const generatePDF = () => {
