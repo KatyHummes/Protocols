@@ -21,10 +21,11 @@ class PeopleController extends Controller
     {
         // dd($request->all());
         $selectedDate = Carbon::parse($request->birth)->format('Y-m-d');
+        $cpfUnmasked = preg_replace('/[^0-9]/', '', $request->cpf);
         People::create([
             'name' => $request->name,
             'birth' => $selectedDate,
-            'cpf' => $request->cpf,
+            'cpf' => $cpfUnmasked,
             'sex' => $request->sex,
             'city' => $request->city,
             'neighborhood' => $request->neighborhood,
@@ -46,6 +47,7 @@ class PeopleController extends Controller
     public function update(PeopleRequest $request, $id)
     {
         // dd($request->all());
+        logger()->info('Received birth date:', ['birth' => $request->birth]);
         $selectedDate = Carbon::parse($request->birth)->format('Y-m-d');
         $people = People::find($id);
         $people->update([
