@@ -112,7 +112,7 @@ const filteredProtocols = computed(() => {
     return props.protocols.filter(protocol => {
         return (
             protocol.people.name.toLowerCase().includes(searchTerm) ||
-            protocol.date.toLowerCase().includes(searchTerm) ||
+            formatDate(protocol.date).toLowerCase().includes(searchTerm) ||
             protocol.id.toString().toLowerCase().includes(searchTerm) ||
             protocol.department.name.toLowerCase().includes(searchTerm) ||
             getStatusText(protocol.latest_report).toLowerCase().includes(searchTerm)
