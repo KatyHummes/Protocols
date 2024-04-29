@@ -104,12 +104,12 @@ const reportSubmit = () => formReport.submit({
     preserveScroll: true,
     onSuccess: () => {
         formReport.reset();
-        toast.success("Pessoa criada com Sucesso!", {
+        toast.success("Acompanhamento criado com Sucesso!", {
             position: 'top-right',
         });
     },
     onError: () => {
-        toast.error("Erro ao atualizar Protocolo!", {
+        toast.error("Erro ao criar Acompanhamento!", {
             position: 'top-right',
         });
     }
@@ -255,7 +255,7 @@ const generatePDF = () => {
                                     </div>
                                     <div v-else class="flex items-center justify-center">
                                         <iframe :src="`../../../storage/${attach.file}`" class="w-52 h-64 object-cover "
-                                             frameborder="0"></iframe>
+                                            frameborder="0"></iframe>
                                     </div>
 
                                     <div class="flex justify-between md:flex-row mt-2">
@@ -309,7 +309,7 @@ const generatePDF = () => {
                                                     </span>
 
                                                     <v-textarea v-model="formReport.description" label="Descrição"
-                                                        variant="outlined"
+                                                        variant="outlined" maxlength="2000" :counter="2000"
                                                         @change="formReport.validate('description')"></v-textarea>
                                                     <span v-if="formReport.invalid('description')"
                                                         class="text-base text-red-500">
@@ -358,7 +358,7 @@ const generatePDF = () => {
     object-fit: cover;
 }
 
-.v-picker{
+.v-picker {
     width: 100% !important;
 }
 </style>
