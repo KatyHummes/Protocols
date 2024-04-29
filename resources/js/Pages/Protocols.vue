@@ -115,7 +115,8 @@ const filteredProtocols = computed(() => {
             formatDate(protocol.date).toLowerCase().includes(searchTerm) ||
             protocol.id.toString().toLowerCase().includes(searchTerm) ||
             protocol.department.name.toLowerCase().includes(searchTerm) ||
-            getStatusText(protocol.latest_report).toLowerCase().includes(searchTerm)
+            getStatusText(protocol.latest_report).toLowerCase().includes(searchTerm) ||
+            protocol.description.toLowerCase().includes(searchTerm)
         );
     });
 });
