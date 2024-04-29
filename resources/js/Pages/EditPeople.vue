@@ -116,7 +116,7 @@ const updateBirthDate = (newValue) => {
                             </div>
 
                             <div>
-                                <v-text-field label="cpf:*" v-model="form.cpf" variant="outlined"
+                                <v-text-field label="cpf:*" v-model="form.cpf" variant="outlined" disabled
                                     v-mask="'###.###.###-##'" @change="form.validate('cpf')"></v-text-field>
                                 <span v-if="form.invalid('cpf')" class="text-base text-red-500">
                                     {{ form.errors.cpf }}

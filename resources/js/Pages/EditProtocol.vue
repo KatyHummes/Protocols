@@ -61,6 +61,28 @@ watch(selectedDate, (newValue, oldValue) => {
     isMenuOpen.value = false
 });
 
+const validateDate = () => {
+    if (!form.date || isNaN(new Date(form.date).getTime())) {
+        form.errors.date = 'A data é obrigatória e deve ser válida.';
+        return false;
+    } else {
+        form.errors.date = null;
+        return true;
+    }
+}
+
+const updateDate = (newValue) => {
+    if (!newValue) {
+        form.date = null; 
+    } else {
+        const newDate = new Date(newValue);
+        if (!isNaN(newDate.getTime())) {
+            form.date = newDate;
+        }
+    }
+    validateDate();  
+};
+
 // configurações das files 
 const isImage = (filename) => {
     return /\.(jpg|jpeg|png)$/i.test(filename);
@@ -205,13 +227,14 @@ const generatePDF = () => {
                                     <v-container>
                                         <v-menu v-model="isMenuOpen" :close-on-content-click="false">
                                             <template v-slot:activator="{ props }">
-                                                <v-text-field label="Selecione a data" :model-value="formattedDate"
-                                                    v-bind="props" variant="outlined"></v-text-field>
+                                                <v-text-field label="Selecione a data de nascimento:*"
+                                                    :model-value="formattedDate" v-bind="props" variant="outlined"
+                                                    @update:modelValue="updateDate"></v-text-field>
                                             </template>
                                             <v-date-picker v-model="form.date"
                                                 @change="form.validate('date')"></v-date-picker>
                                         </v-menu>
-                                        <span v-if="form.invalid('date')" class="text-base text-red-500">
+                                        <span class="text-base text-red-500">
                                             {{ form.errors.date }}
                                         </span>
                                     </v-container>

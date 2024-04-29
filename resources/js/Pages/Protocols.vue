@@ -108,6 +108,7 @@ const itemsPerPage = 10;
 
 const filteredProtocols = computed(() => {
     const searchTerm = search.value.toLowerCase().trim();
+    page.value = 1
     return props.protocols.filter(protocol => {
         return (
             protocol.people.name.toLowerCase().includes(searchTerm) ||
