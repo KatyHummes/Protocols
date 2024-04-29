@@ -6,6 +6,7 @@ use App\Http\Requests\PeopleRequest;
 use App\Models\People;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class PeopleController extends Controller
 {
@@ -47,7 +48,7 @@ class PeopleController extends Controller
     public function update(PeopleRequest $request, $id)
     {
         // dd($request->all());
-        logger()->info('Received birth date:', ['birth' => $request->birth]);
+
         $selectedDate = Carbon::parse($request->birth)->format('Y-m-d');
         $people = People::find($id);
         $people->update([

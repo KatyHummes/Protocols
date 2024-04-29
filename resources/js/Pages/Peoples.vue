@@ -56,11 +56,12 @@ const itemsPerPage = 10;
 
 const filteredPeoples = computed(() => {
     const searchTerm = search.value.toLowerCase().trim();
+    page.value = 1
     return props.peoples.filter(people => {
         return (
             people.name.toLowerCase().includes(searchTerm) ||
             people.birth.toLowerCase().includes(searchTerm) ||
-            formatCPF(people.cpf).toLowerCase().includes(searchTerm) ||
+            formatCPF(people.cpf).toString().toLowerCase().includes(searchTerm) ||
             people.sex.toLowerCase().includes(searchTerm)
         );
     });

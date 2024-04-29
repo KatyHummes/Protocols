@@ -252,7 +252,7 @@ const downloadPDF = () => {
                     <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
 
                         <v-col cols="auto" class="flex justify-between mb-5">
-                            <v-dialog transition="dialog-top-transition" max-width="500">
+                            <v-dialog transition="dialog-top-transition" max-width="800">
                                 <template v-slot:activator="{ props: activatorProps }">
                                     <v-btn v-bind="activatorProps">Criar Protocolo</v-btn>
                                 </template>

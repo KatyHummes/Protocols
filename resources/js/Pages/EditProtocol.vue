@@ -33,7 +33,6 @@ const form = useForm('put', route('protocol.update', props.protocol.id), {
 const submit = () => form.submit({
     preserveScroll: true,
     onSuccess: () => {
-        form.reset();
         toast.open({
             message: 'Protocolo atualizado com sucesso!',
             type: 'success',
@@ -247,7 +246,7 @@ const generatePDF = () => {
                             <h1 class="m-4">Pré-visualização dos Arquivos:</h1>
                             <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 m-4">
                                 <div v-for="attach in protocol.docattachs" :key="attach.id"
-                                    class="mb-4 rounded-2xl border-slate-100 border-4 bg-white p-4">
+                                    class="mb-4 rounded-2xl border-slate-100 border-4 bg-white p-4 md:flex-grow">
                                     <div v-if="isImage(attach.file)">
                                         <!-- {{ attach.file }} -->
                                         <img :src="`../../../storage/${attach.file}`" alt="Image Preview"
@@ -259,7 +258,7 @@ const generatePDF = () => {
                                              frameborder="0"></iframe>
                                     </div>
 
-                                    <div class="flex justify-end mt-2">
+                                    <div class="flex justify-between md:flex-row mt-2">
                                         <button @click="downloadFile(attach.file)"
                                             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
                                             Baixar
@@ -357,5 +356,9 @@ const generatePDF = () => {
     width: 200px;
     height: 200px;
     object-fit: cover;
+}
+
+.v-picker{
+    width: 100% !important;
 }
 </style>

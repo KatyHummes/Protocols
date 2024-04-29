@@ -12,9 +12,10 @@ const props = defineProps({
     people: Object,
 });
 
+const birthDate = new Date(props.people.birth);
 const form = useForm('put', route('people.update', props.people.id), {
     name: props.people.name,
-    birth: new Date (props.people.birth),
+    birth: isNaN(birthDate.getTime()) ? null : birthDate,
     cpf: props.people.cpf,
     sex: props.people.sex,
     city: props.people.city,
@@ -25,43 +26,32 @@ const form = useForm('put', route('people.update', props.people.id), {
 });
 
 const submit = () => {
-  if (!validateBirthDate()) {
-    toast.open({
-      message: 'Por favor, corrija os erros antes de submeter.',
-      type: 'error',
-      position: 'top-right',
+    form.put(route('people.update', props.people.id), {
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.open({
+                message: 'Pessoa atualizada com sucesso!',
+                type: 'success',
+                position: 'top-right',
+            });
+        },
+        onError: () => {
+            toast.open({
+                message: 'Erro ao atualizar pessoa!',
+                type: 'error',
+            });
+        },
     });
-    return;
-  }
-
-  form.submit({
-    preserveScroll: true,
-    onSuccess: () => {
-      form.reset();
-      toast.open({
-        message: 'Pessoa atualizada com sucesso!',
-        type: 'success',
-        position: 'top-right',
-      });
-    },
-    onError: () => {
-      toast.open({
-        message: 'Erro ao atualizar pessoa!',
-        type: 'error',
-        position: 'top-right',
-      });
-    },
-  });
 };
 
-const validateBirthDate = () => {
-  if (!form.birth) {
-    form.errors.birth = 'O campo data de nascimento é obrigatório.';
-    return false;
-  } else {
-    form.errors.birth = null;
-    return true;
-  }
+const validateBirth = () => {
+    if (!form.birth || isNaN(new Date(form.birth).getTime())) {
+        form.errors.birth = 'A data de nascimento é obrigatória e deve ser válida.';
+        return false;
+    } else {
+        form.errors.birth = null;
+        return true;
+    }
 }
 
 // configuração de datas
@@ -76,6 +66,18 @@ const formattedDate = computed(() => {
 watch(selectedDate, (newValue, oldValue) => {
     isMenuOpen.value = false
 })
+
+const updateBirthDate = (newValue) => {
+    if (!newValue) {
+        form.birth = null;  // Limpa o valor de `form.birth` se o campo estiver vazio
+    } else {
+        const newDate = new Date(newValue);
+        if (!isNaN(newDate.getTime())) {
+            form.birth = newDate;
+        }
+    }
+    validateBirth();  // Valida novamente após atualizar
+};
 </script>
 
 <template>
@@ -101,18 +103,21 @@ watch(selectedDate, (newValue, oldValue) => {
                             <div>
                                 <v-menu v-model="isMenuOpen" :close-on-content-click="false">
                                     <template v-slot:activator="{ props }">
-                                        <v-text-field label="Selecione a data" :model-value="formattedDate"
-                                            v-bind="props" variant="outlined"></v-text-field>
+                                        <v-text-field label="Selecione a data de nascimento:*"
+                                            :model-value="formattedDate" v-bind="props" variant="outlined"
+                                            @update:modelValue="updateBirthDate"></v-text-field>
                                     </template>
-                                    <v-date-picker v-model="form.birth" @change="validateBirthDate"></v-date-picker>
+                                    <v-date-picker v-model="form.birth"
+                                        @change="form.validate('birth')"></v-date-picker>
                                 </v-menu>
-                                <span v-if="form.invalid('birth')" class="text-base text-red-500">
+                                <span class="text-base text-red-500">
                                     {{ form.errors.birth }}
                                 </span>
                             </div>
+
                             <div>
                                 <v-text-field label="cpf:*" v-model="form.cpf" variant="outlined"
-                                    v-mask="'###.###.###-##'" @change="form.validate('cpf')" ></v-text-field>
+                                    v-mask="'###.###.###-##'" @change="form.validate('cpf')"></v-text-field>
                                 <span v-if="form.invalid('cpf')" class="text-base text-red-500">
                                     {{ form.errors.cpf }}
                                 </span>
@@ -153,7 +158,9 @@ watch(selectedDate, (newValue, oldValue) => {
                         </div>
 
                         <div class="flex justify-between items-center">
-                            <Link :href="route('people.index')" class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">Voltar</Link>
+                            <Link :href="route('people.index')"
+                                class="text-base  font-semibold border-2 border-gray-600 rounded-3xl mx-4 px-4 py-1 hover:bg-purple-800 hover:text-white">
+                            Voltar</Link>
 
                             <v-btn class="m-4" type="submit" color="primary">Salvar</v-btn>
                         </div>
@@ -163,3 +170,8 @@ watch(selectedDate, (newValue, oldValue) => {
         </div>
     </AppLayout>
 </template>
+<style>
+.v-picker {
+    width: 100% !important;
+}
+</style>

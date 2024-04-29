@@ -52,7 +52,6 @@ const formAccess = useForm('post', route('access', props.department.id), {
 const submitAccess = () => formAccess.submit({
     preserveScroll: true,
     onSuccess: () => {
-        formAccess.reset();
         toast.open({
             message: 'Acesso liberado com sucesso!',
             type: 'success',
@@ -63,6 +62,7 @@ const submitAccess = () => formAccess.submit({
         toast.open({
             message: 'Erro ao liberar o acesso!',
             type: 'error',
+            position: 'top-right',
         });
     },
 });
