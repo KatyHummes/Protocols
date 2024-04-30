@@ -22,14 +22,14 @@ const avaliableUsers = computed(() => {
 
 
 // formularios para atualizar o departamento
-const form = useForm('post', route('department.update', props.department.id), {
+const form = useForm('put', route('department.update', props.department.id), {
     name: props.department.name,
 });
+
 
 const submit = () => form.submit({
     preserveScroll: true,
     onSuccess: () => {
-        form.reset();
         toast.open({
             message: 'Departamento atualizado com sucesso!',
             type: 'success',
@@ -38,8 +38,9 @@ const submit = () => form.submit({
     },
     onError: () => {
         toast.open({
-            message: 'Erro ao atualizar Departamentos!',
+            message: 'Erro ao atualizar Departamento!',
             type: 'error',
+            position: 'top-right',
         });
     },
 });
