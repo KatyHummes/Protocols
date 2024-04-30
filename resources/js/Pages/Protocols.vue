@@ -229,7 +229,7 @@ const downloadPDF = () => {
         doc.setFontSize(12);
         doc.setTextColor(0);
         doc.text(`Nome do Contribuinte: ${protocol.people.name}`, 15, y);
-        doc.text(`Data: ${protocol.date}`, 15, y + 5);
+        doc.text(`Data: ${formatDate(protocol.date)}`, 15, y + 5);
         lines.forEach((line, i) => {
             doc.text(line, 15, y + 10 + (i * lineHeight));
         });
