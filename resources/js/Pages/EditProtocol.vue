@@ -73,14 +73,14 @@ const validateDate = () => {
 
 const updateDate = (newValue) => {
     if (!newValue) {
-        form.date = null; 
+        form.date = null;
     } else {
         const newDate = new Date(newValue);
         if (!isNaN(newDate.getTime())) {
             form.date = newDate;
         }
     }
-    validateDate();  
+    validateDate();
 };
 
 // configurações das files 
@@ -137,8 +137,15 @@ const reportSubmit = () => formReport.submit({
     }
 });
 
+const reversedReports = computed(() => {
+    return [...props.reports].reverse();
+});
+
 const formatDate = (dateString) => {
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    const options = {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: false 
+    };
     return new Date(dateString).toLocaleDateString(undefined, options);
 };
 
@@ -352,8 +359,7 @@ const generatePDF = () => {
                             </v-dialog>
                             <v-card-text>
                                 <h1>Acompanhamento Realizados:</h1>
-
-                                <div v-for="report in reports" :key="report.id" cols="12" md="6" ref="updateKey">
+                                <div v-for="report in reversedReports" :key="report.id" cols="12" md="6">
                                     <v-card class="m-4">
                                         <v-container>
                                             <div class="flex justify-between m-4">
