@@ -18,24 +18,28 @@ use Inertia\Inertia;
 class ProtocolController extends Controller
 {
     public function index()
-    {
-        $userId = Auth::id();
-        $allowedDepartments = Access::where('user_id', $userId)->pluck('department_id');
+{
+    $user = Auth::user(); // Usando o modelo User diretamente para obter o usuário autenticado
 
-        $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
-        $peoples = People::get(['id', 'name']);
+    // Definir departamentos permitidos com base no tipo do usuário
+    $allowedDepartments = ($user->type === 'A') 
+        ? $user->departments->pluck('id') // Usuários do tipo 'A' vêem apenas departamentos aos quais têm acesso
+        : Department::pluck('id'); // Outros usuários veem todos os departamentos
 
-        // Modificação para incluir o último relatório e pessoa associada
-        $protocols = Protocol::with(['people', 'latestReport', 'department'])
-            ->whereIn('department_id', $allowedDepartments)
-            ->get();
+    $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
+    $peoples = People::get(['id', 'name']);
+    $protocols = Protocol::with(['people', 'latestReport', 'department'])
+        ->whereIn('department_id', $allowedDepartments)
+        ->get();
 
-        return Inertia::render('Protocols', [
-            'protocols' => $protocols,
-            'peoples' => $peoples,
-            'departments' => $departments
-        ]);
-    }
+    return Inertia::render('Protocols', [
+        'protocols' => $protocols,
+        'peoples' => $peoples,
+        'departments' => $departments
+    ]);
+}
+
+
 
 
     public function store(ProtocolRequest $request)
@@ -71,27 +75,32 @@ class ProtocolController extends Controller
 
     // Editar protocolos
     public function show($id)
-    {
-        $userId = Auth::id();
+{
+    $user = Auth::user(); // Obtenção do usuário autenticado
 
-        $allowedDepartments = Access::where('user_id', $userId)->pluck('department_id');
+    // Definir os departamentos permitidos com base no tipo do usuário
+    $allowedDepartments = ($user->type === 'A')
+        ? $user->departments->pluck('id') // Usuários do tipo 'A' vêem apenas os departamentos aos quais têm acesso
+        : Department::pluck('id'); // Outros usuários veem todos os departamentos
 
-        $protocol = Protocol::with('people', 'docattachs')
-            ->whereIn('department_id', $allowedDepartments)
-            ->findOrFail($id);
+    // Buscar o protocolo com restrições de departamentos
+    $protocol = Protocol::with('people', 'docattachs')
+        ->whereIn('department_id', $allowedDepartments)
+        ->findOrFail($id); // Usar findOrFail para garantir que o protocolo existe e está no departamento permitido
 
-        // Obter apenas os departamentos permitidos para o usuário
-        $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
-        $peoples = People::get(['id', 'name']);
-        $reports = Report::where('protocol_id', $id)->get();
+    // Obter apenas os departamentos permitidos para o usuário
+    $departments = Department::whereIn('id', $allowedDepartments)->get(['id', 'name']);
+    $peoples = People::get(['id', 'name']);
+    $reports = Report::where('protocol_id', $id)->get();
 
-        return Inertia::render('EditProtocol', [
-            'protocol' => $protocol,
-            'departments' => $departments,
-            'peoples' => $peoples,
-            'reports' => $reports,
-        ]);
-    }
+    return Inertia::render('EditProtocol', [
+        'protocol' => $protocol,
+        'departments' => $departments,
+        'peoples' => $peoples,
+        'reports' => $reports,
+    ]);
+}
+
 
     public function deleteAttachment($id)
     {

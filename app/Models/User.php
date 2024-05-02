@@ -20,7 +20,7 @@ class User extends Authenticatable implements Auditable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use \OwenIt\Auditing\Auditable;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -84,6 +84,6 @@ class User extends Authenticatable implements Auditable
 
     public function departments()
     {
-        return $this->belongsToMany(Department::class, 'access', 'user_id', 'department_id');
+        return $this->belongsToMany(Department::class, 'accesses', 'user_id', 'department_id');
     }
 }
