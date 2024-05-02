@@ -7,12 +7,18 @@ use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
 {
     // criar departamento
     public function index()
     {
+        $authUser = Auth::user();
+        if ($authUser->active === 'N') {
+            return redirect()->back();
+        }
+
         $userType = auth()->user()->type;
         if ($userType === 'A') {
             return redirect()->back();
@@ -35,6 +41,11 @@ class DepartmentController extends Controller
     // editar departamentos
     public function show($id)
     {
+        $authUser = Auth::user();
+        if ($authUser->active === 'N') {
+            return redirect()->back();
+        }
+        
         $userType = auth()->user()->type;
         if ($userType === 'A') {
             return redirect()->back();

@@ -6,12 +6,17 @@ use App\Http\Requests\PeopleRequest;
 use App\Models\People;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class PeopleController extends Controller
 {
     public function index()
     {
+        $authUser = Auth::user();
+        if ($authUser->active === 'N') {
+            return redirect()->back();
+        }
         $peoples = People::all();
         return Inertia::render('Peoples', [
             'peoples' => $peoples
@@ -38,6 +43,11 @@ class PeopleController extends Controller
 
     public function show($id)
     {
+        $authUser = Auth::user();
+        if ($authUser->active === 'N') {
+            return redirect()->back();
+        }
+        
         $people = People::find($id);
         // dd($people);
         return Inertia::render('EditPeople', [

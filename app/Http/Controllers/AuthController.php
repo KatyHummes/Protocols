@@ -39,6 +39,11 @@ class AuthController extends Controller
 
     public function index()
     {
+        $authUser = Auth::user();
+        if ($authUser->active === 'N') {
+            return redirect()->back();
+        }
+        
         $userType = auth()->user()->type;
         if ($userType === 'A') {
             return redirect()->back();
