@@ -51,13 +51,13 @@ function validateFiles() {
     if (form.files.length > maxFiles) {
         console.log('maxFiles')
         toast.open({
-            message: `Você pode anexar no máximo ${maxFiles} arquivos.`,
+            message: `Anexar no máximo ${maxFiles} arquivos.`,
             type: 'error',
             position: 'top-right',
             duration: 10000
         });
         form.files = []
-        form.errors.files = [`Número máximo de ${maxFiles} arquivos excedido.`];
+        form.errors.files = [`Número máximo de ${maxFiles}.`];
         return false;
     }
 
@@ -65,7 +65,7 @@ function validateFiles() {
         if (!validTypes.includes(file.type)) {
             console.log('maxFiles')
             toast.open({
-                message: 'Apenas arquivos PDF, PNG, JPG ou JPEG são permitidos.',
+                message: 'Apenas PDF, PNG, JPG ou JPEG são permitidos.',
                 type: 'error',
                 position: 'top-right',
                 duration: 10000
@@ -77,13 +77,13 @@ function validateFiles() {
 
         if (file.size > maxSize) {
             toast.open({
-                message: 'Cada arquivo deve ter no máximo 5MB.',
+                message: 'Cada arquivo deve ter no máximo 3MB.',
                 type: 'error',
                 position: 'top-right',
                 duration: 10000
             });
             form.files = []
-            form.errors.files = ['Um ou mais arquivos excedem o limite de 5MB.'];
+            form.errors.files = ['Um ou mais, excedeu o limite de 3MB.'];
             return false;
         }
     }
@@ -245,7 +245,7 @@ const downloadPDF = () => {
     <AppLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Protocolos
+                Protocolos 
             </h2>
         </template>
         <div class="py-12">
@@ -254,7 +254,7 @@ const downloadPDF = () => {
                     <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
 
                         <v-col cols="auto" class="flex justify-between mb-5">
-                            <v-dialog transition="dialog-top-transition" max-width="800">
+                            <v-dialog transition="dialog-top-transition" max-width="600">
                                 <template v-slot:activator="{ props: activatorProps }">
                                     <v-btn v-bind="activatorProps">Criar Protocolo</v-btn>
                                 </template>
