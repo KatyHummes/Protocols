@@ -62,7 +62,8 @@ const translateActive = (active) => {
                         <form @submit.prevent="submit">
                             <v-container>
                                 <v-text-field label="Nome:" v-model="form.name" variant="outlined"
-                                    @change="form.validate('name')"></v-text-field>
+                                    @change="form.validate('name')" :disabled="props.user.type === 'T'">
+                                </v-text-field>
                                 <span v-if="form.invalid('name')" class="text-base text-red-500">
                                     {{ form.errors.name }}
                                 </span>
@@ -78,7 +79,7 @@ const translateActive = (active) => {
 
                             <v-container>
                                 <v-text-field label="CPF:" v-model="form.cpf" variant="outlined" disabled
-                                v-mask="'###.###.###-##'" @change="form.validate('cpf')"></v-text-field>
+                                    v-mask="'###.###.###-##'" @change="form.validate('cpf')"></v-text-field>
                                 <span v-if="form.invalid('cpf')" class="text-base text-red-500">
                                     {{ form.errors.cpf }}
                                 </span>
@@ -86,7 +87,9 @@ const translateActive = (active) => {
 
                             <v-container class="mt-4">
                                 <InputLabel for="type" value="Perfil" class="text-gray-900" />
-                                <select v-model="form.type" @change="form.validate('type')" class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm">
+                                <select v-model="form.type" @change="form.validate('type')"
+                                    class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm"
+                                    :disabled="props.user.type === 'T'">
                                     <option value="">selecione</option>
                                     <option value="T" v-if="$page.props.auth.user.type === 'T'">Administrador da TI
                                     </option>
@@ -104,7 +107,7 @@ const translateActive = (active) => {
                             <v-container class="mt-4">
                                 <InputLabel value="Situação" class="text-gray-900" />
                                 <select id="active" v-model="form.active"
-                                    class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm" autofocus>
+                                    class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm" :disabled="props.user.type === 'T'" autofocus>
                                     <option selected :value="form.active">{{ translateActive(form.active) }}</option>
                                     <option value="S">Ativo</option>
                                     <option value="N">Desativado</option>

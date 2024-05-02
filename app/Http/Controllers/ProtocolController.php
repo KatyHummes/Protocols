@@ -21,8 +21,7 @@ class ProtocolController extends Controller
     {
         $user = Auth::user();
 
-        $authUser = Auth::user();
-        if ($authUser->active === 'N') {
+        if ($user->active === 'N') {
             return redirect()->back();
         }
 
@@ -83,8 +82,7 @@ class ProtocolController extends Controller
     {
         $user = Auth::user();
 
-        $authUser = Auth::user();
-        if ($authUser->active === 'N') {
+        if ($user->active === 'N') {
             return redirect()->back();
         }
 

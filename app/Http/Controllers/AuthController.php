@@ -73,15 +73,19 @@ class AuthController extends Controller
     }
 
     public function update(UserEditRequest $request, $id)
-    {
-        // dd($request->all());
-        $user = User::findOrFail($id);
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'type' => $request->type,
-            'cpf' => $request->cpf,
-            'active' => $request->active
-        ]);
+{
+    $user = User::findOrFail($id);
+
+    if ($user->type === 'T') {
+        return redirect()->back();
     }
+
+    $user->update([
+        'name' => $request->name,
+        'email' => $request->email,
+        'type' => $request->type,
+        'cpf' => $request->cpf,
+        'active' => $request->active
+    ]);
+}
 }
