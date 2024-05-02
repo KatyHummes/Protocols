@@ -102,7 +102,7 @@ const translateActive = (active) => {
                             </v-container>
 
                             <v-container class="mt-4">
-                                <InputLabel for="active" value="active" class="text-gray-900" />
+                                <InputLabel value="Situação" class="text-gray-900" />
                                 <select id="active" v-model="form.active"
                                     class="mt-1 block w-full bg-slate-50 rounded-md shadow-sm" autofocus>
                                     <option selected :value="form.active">{{ translateActive(form.active) }}</option>

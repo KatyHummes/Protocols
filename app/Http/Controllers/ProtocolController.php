@@ -95,10 +95,13 @@ class ProtocolController extends Controller
 
     public function deleteAttachment($id)
     {
-        // dd($id);
-        DocAttach::destroy($id);
-    }
+        $attachment = DocAttach::find($id);
+        if ($attachment) {
+            Storage::delete('public/' . $attachment->file);
 
+            $attachment->delete();
+        }
+    }
     public function update(ProtocolRequest $request, $id)
     {
         $selectedDate = Carbon::parse($request->date)->format('Y-m-d');
