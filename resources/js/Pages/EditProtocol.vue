@@ -160,42 +160,62 @@ const translateStatus = (status) => {
     }
 };
 
-
 // Função para gerar o PDF
 const generatePDF = () => {
-    const doc = new jsPDF();
+  const doc = new jsPDF();
 
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
-    doc.text('Protocolo: ' + props.protocol.id, 10, 10);
-    doc.setFontSize(12);
-    doc.text(`Data: ${formatDate(form.date)}`, 10, 20);
-    doc.text(`Departamento: ${props.departments.find(d => d.id === form.department_id)?.name}`, 10, 30);
-    doc.text(`Contribuinte: ${props.peoples.find(p => p.id === form.people_id)?.name}`, 10, 40);
+  // Título
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.text('Relatório Detalhado do Protocolo', 10, 10);
 
-    doc.setFont('helvetica', 'normal');
-    let currentY = 50;
-    const splitDescription = doc.splitTextToSize(form.description, 180);
-    doc.text(splitDescription, 10, currentY);
-    currentY += splitDescription.length * 10 + 10;
+  // Dados principais do protocolo
+  const protocolData = [
+    ["Número: " + props.protocol.id, "Data de abertura: " + formatDate(form.date)],
+    ["Contribuinte: " + (props.peoples.find(p => p.id === form.people_id)?.name || ""), "Data de limite: " + formatDate(form.deadline)],
+    ["Departamento: " + (props.departments.find(d => d.id === form.department_id)?.name || ""), "Situação: " + translateStatus(form.status)]
+  ];
+  const splitDescription = doc.splitTextToSize(form.description, 180);
+  protocolData.push(["Descrição: ", splitDescription.join(' ')]);
+  
+  doc.autoTable({
+    head: [],
+    body: protocolData,
+    startY: 20,
+    theme: 'plain',
+    styles: { fontSize: 10 }
+  });
 
-    props.reports.forEach((report, index) => {
-        doc.text(`Relatório ${index + 1}:`, 10, currentY);
-        const splitReportDescription = doc.splitTextToSize(report.description, 180);
-        doc.text(splitReportDescription, 10, currentY + 10);
-        currentY += splitReportDescription.length * 10 + 10;
+  let currentY = doc.previousAutoTable.finalY + 10;
 
-        doc.text(`Situação: ${translateStatus(report.status)}`, 10, currentY);
-        doc.text(`Data: ${formatDate(report.created_at)}`, 10, currentY + 10);
-        currentY += 20;
+  // Título Acompanhamentos
+  doc.setFontSize(14);
+  doc.text('Acompanhamentos:', 10, currentY);
+  currentY += 10;
 
-        if (currentY > 280) { // Verifica se precisa de uma nova página
-            doc.addPage();
-            currentY = 10;
-        }
-    });
+  // Tabela de Acompanhamentos
+  const tableColumn = ["Data", "Descrição", "Situação"];
+  const tableRows = [];
 
-    doc.save(`protocolo-${props.protocol.id}.pdf`);
+  props.reports.forEach((report) => {
+    const reportData = [
+      formatDate(report.created_at),
+      report.description.length > 2000 ? report.description.slice(0, 2000) + "..." : report.description,
+      translateStatus(report.status)
+    ];
+    tableRows.push(reportData);
+  });
+
+  doc.autoTable({
+    head: [tableColumn],
+    body: tableRows,
+    startY: currentY,
+    theme: 'grid',
+    styles: { fontSize: 10 },
+    bodyStyles: { valign: 'top' }
+  });
+
+  doc.save(`protocolo-${props.protocol.id}.pdf`);
 };
 
 </script>
