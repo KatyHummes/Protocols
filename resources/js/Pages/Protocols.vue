@@ -83,7 +83,7 @@ function validateFiles() {
                 duration: 10000
             });
             form.files = []
-            form.errors.files = ['Um ou mais, excedeu o limite de 3MB.'];
+            form.errors.files = ['Um ou mais arquivos, excedeu o limite de 3MB.'];
             return false;
         }
     }

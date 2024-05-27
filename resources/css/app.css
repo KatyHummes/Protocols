@@ -18,3 +18,17 @@
     box-shadow: none;
     border-color: none;
 }
+
+/* *.v-overlay-container {
+ z-index: 998;
+} */
+
+* .v-toast, .v-toast--top {
+    z-index: 9999 !important; 
+}
+* .v-overlay__content{
+    z-index: 5;
+}
+* .v-overlay__scrim {
+    z-index: 1;
+}
