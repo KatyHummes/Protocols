@@ -27,11 +27,10 @@ class PeopleController extends Controller
     {
         // dd($request->all());
         $selectedDate = Carbon::parse($request->birth)->format('Y-m-d');
-        $cpfUnmasked = preg_replace('/[^0-9]/', '', $request->cpf);
         People::create([
             'name' => $request->name,
             'birth' => $selectedDate,
-            'cpf' => $cpfUnmasked,
+            'cpf' => $request->birth,
             'sex' => $request->sex,
             'city' => $request->city,
             'neighborhood' => $request->neighborhood,

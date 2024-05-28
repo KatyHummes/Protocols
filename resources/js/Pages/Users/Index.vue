@@ -85,7 +85,7 @@ const translateActive = (active) => {
                                 <th class="text-left">Nome</th>
                                 <th class="text-left">E-mail</th>
                                 <th class="text-left">Perfil</th>
-                                <th class="text-left">Ativo</th>
+                                <th class="text-left">Situação</th>
                                 <th class="text-left">Ações</th>
                             </tr>
                         </thead>

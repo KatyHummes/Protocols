@@ -26,34 +26,38 @@ const form = useForm('post', route('people.store'), {
     complement: '',
 });
 
-const submit = () => form.submit({
-    preserveScroll: true,
-    onSuccess: () => {
-        form.reset();
-        toast.success("Pessoa criada com Sucesso!", {
-            position: 'top-right',
-        });
-    },
-    onError: (error) => {
-        console.log(error)
-        toast.error("Erro ao criar Pessoa!", {
-            position: 'top-right',
-        });
-    }
-});
+const submit = () => {
+    form.cpf = form.cpf.replace(/\D/g, '');
+
+    form.submit({
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset();
+            toast.success("Pessoa criada com Sucesso!", {
+                position: 'top-right',
+            });
+        },
+        onError: (error) => {
+            console.log(error);
+            toast.error("Erro ao criar Pessoa!", {
+                position: 'top-right',
+            });
+        }
+    });
+};
 
 const validateDate = () => {
-    if(!form.date || isNaN(new Date(form.birth).getTime())) {
+    if (!form.date || isNaN(new Date(form.birth).getTime())) {
         form.errors.birth = 'A data de Nascimento é obrigatória e deve ser válida.'
         return false;
-    }else {
+    } else {
         form.errors.birth = null;
         return true;
     }
 }
 
 const updateDateReset = (newValue) => {
-    if(!newValue) {
+    if (!newValue) {
         form.date = null;
     } else {
         const newDate = new Date(newValue);
@@ -115,7 +119,7 @@ const formatCPF = (cpf) => {
     if (cpf && cpf.length === 11) {
         return `${cpf.slice(0, 3)}.${cpf.slice(3, 6)}.${cpf.slice(6, 9)}-${cpf.slice(9, 11)}`;
     }
-    return cpf; 
+    return cpf;
 };
 
 // Modal deletar pessoas
@@ -181,7 +185,8 @@ const deletePeople = () => {
                                                     <template v-slot:activator="{ props }">
                                                         <v-text-field label="Selecione a data:*"
                                                             :model-value="formattedDate" v-bind="props"
-                                                            variant="outlined" @update:modelValue="updateDateReset"></v-text-field>
+                                                            variant="outlined"
+                                                            @update:modelValue="updateDateReset"></v-text-field>
                                                     </template>
                                                     <v-date-picker v-model="form.birth"
                                                         :rules="[() => dateValidation(form.birth, 30, 0)]"

@@ -20,20 +20,24 @@ const form = useForm('post', route('user.register'), {
     active: 'S',
 });
 
-const submit = () => form.submit({
-    preserveScroll: true,
-    onSuccess: () => {
-        form.reset();
-        toast.success("Usuário criado com Sucesso!", {
-            position: 'top-right',
-        });
-    },
-    onError: () => {
-        toast.error("Erro ao criar Usuário!", {
-            position: 'top-right',
-        });
-    }
-});
+const submit = () => {
+    form.cpf = form.cpf.replace(/\D/g, '');
+    
+    form.submit({
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset();
+            toast.success("Usuário criado com Sucesso!", {
+                position: 'top-right',
+            });
+        },
+        onError: () => {
+            toast.error("Erro ao criar Usuário!", {
+                position: 'top-right',
+            });
+        }
+    });
+};
 
 </script>
 
@@ -65,7 +69,7 @@ const submit = () => form.submit({
 
                     <v-container>
                         <v-text-field label="CPF:" v-model="form.cpf" variant="outlined" v-mask="'###.###.###-##'"
-                            @change="validateField('cpf')"></v-text-field>>
+                            @change="form.validate('cpf')"></v-text-field>
                         <span v-if="form.invalid('cpf')" class="text-base text-red-500">
                             {{ form.errors.cpf }}
                         </span>

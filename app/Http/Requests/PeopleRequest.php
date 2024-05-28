@@ -27,10 +27,17 @@ class PeopleRequest extends FormRequest
         return [
             'name' => ['required'],
             'birth' => ['required', new AgeRequirement],
-            'cpf' => ['required', "unique:people,cpf,{$peopleId}", new ValidCpf()],
+            'cpf' => ['required', 'unique:people,cpf,' . $peopleId, new ValidCpf()],
             'sex' => ['required'],
         ];
     }
+
+    public function prepareForValidation()
+{
+    $this->merge([
+        'cpf' => preg_replace('/[^0-9]/', '', $this->cpf),
+    ]);
+}
 
     public function messages()
     {

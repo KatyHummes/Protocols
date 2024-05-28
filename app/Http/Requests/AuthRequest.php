@@ -31,6 +31,13 @@ class AuthRequest extends FormRequest
         ];
     }
 
+    public function prepareForValidation()
+{
+    $this->merge([
+        'cpf' => preg_replace('/[^0-9]/', '', $this->cpf),
+    ]);
+}
+
     public function messages(): array
     {
         return [

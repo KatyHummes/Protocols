@@ -26,10 +26,10 @@ class UserEditRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', 'max:255'],
-            'cpf' => ['required', "unique:user,cpf,{$userId}", new ValidCpf()],
             'active' => ['required', 'string', 'max:1'],
         ];
     }
+
 
     public function messages(): array
     {
@@ -37,7 +37,6 @@ class UserEditRequest extends FormRequest
             'required' => 'Este campo é obrigatório',
             'string' => 'Deve ser uma string',
             'max' => 'O campo não pode ter mais caracteres',
-            'ValidCpf' => 'O CPF informado é inválido',
         ];
     }
 }

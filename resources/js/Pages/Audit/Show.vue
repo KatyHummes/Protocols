@@ -65,28 +65,6 @@ const formatDate = (dateString) => {
                         <span>ID Auditado: </span>
                         <span>{{ audit.auditable_id }}</span>
                     </v-container>
-                </v-container>
-                <v-container class="grid md:grid-cols-2 gap-4">
-                    <div v-if="audit.old_values">
-                        <h2 class="font-bold">Valores Antigos:</h2>
-                        <div v-for="(value, key) in audit.old_values" :key="key">
-                            <div>
-                                <span>{{ capitalize(key) + ': ' }}</span>
-                                <span>{{ value }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="audit.new_values && Object.keys(audit.new_values).length">
-                        <h2 class="font-bold">Novos Valores:</h2>
-                        <div v-for="(value, key) in audit.new_values" :key="key">
-                            <div>
-                                <span>{{ capitalize(key) + ': ' }}</span>
-                                <span>{{ value }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </v-container>
-                <v-container class="grid grid-cols-2">
                     <v-container>
                         <span>URL: </span>
                         <span>{{ audit.url }}</span>
@@ -95,6 +73,34 @@ const formatDate = (dateString) => {
                         <span>IP: </span>
                         <span>{{ audit.ip_address }}</span>
                     </v-container>
+                </v-container>
+                <v-container class="grid md:grid-cols-2 gap-4">
+                    <v-card>
+                        <v-container>
+                            <div v-if="audit.old_values">
+                                <h2 class="font-bold">Valores Antigos:</h2>
+                                <div v-for="(value, key) in audit.old_values" :key="key">
+                                    <div>
+                                        <span>{{ capitalize(key) + ': ' }}</span>
+                                        <span>{{ value }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </v-container>
+                    </v-card>
+                    <v-card>
+                        <v-container>
+                            <div v-if="audit.new_values && Object.keys(audit.new_values).length">
+                                <h2 class="font-bold">Novos Valores:</h2>
+                                <div v-for="(value, key) in audit.new_values" :key="key">
+                                    <div>
+                                        <span>{{ capitalize(key) + ': ' }}</span>
+                                        <span>{{ value }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </v-container>
+                    </v-card>
                 </v-container>
                 <v-container>
                     <Link :href="route('audit.index')"
