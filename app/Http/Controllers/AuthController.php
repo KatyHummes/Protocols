@@ -27,12 +27,13 @@ class AuthController extends Controller
 
     public function register(AuthRequest $request)
     {
+        $cpfUnmasked = preg_replace('/[^0-9]/', '', $request->cpf);
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'type' => $request->type,
-            'cpf' => $request->cpf,
+            'cpf' => $cpfUnmasked,
             'active' === 'S'
         ]);
     }
@@ -76,15 +77,13 @@ class AuthController extends Controller
 {
     $user = User::findOrFail($id);
 
-    if ($user->type === 'T') {
+    if ($user->type === 'A') {
         return redirect()->back();
     }
 
     $user->update([
         'name' => $request->name,
-        'email' => $request->email,
         'type' => $request->type,
-        'cpf' => $request->cpf,
         'active' => $request->active
     ]);
 }

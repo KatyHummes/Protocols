@@ -54,7 +54,7 @@ Route::middleware([
     Route::get('/departamento/{id}', [DepartmentController::class, 'show'])->name('department.show');
     Route::put('/departamento/{id}', [DepartmentController::class, 'update'])->name('department.update')->middleware([HandlePrecognitiveRequests::class]);
 
-    // Acesso:
+    // Acessos aos departamentos:
     Route::post('/access/{id}', [ReportController::class, 'access'])->name('access')->middleware([HandlePrecognitiveRequests::class]);
     Route::post('access-destroy/{id}', [ReportController::class, 'destroy'])->name('access.destroy');
 

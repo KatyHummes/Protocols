@@ -27,7 +27,7 @@ class AuthRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'type' => ['required', 'string', 'max:255'],
-            'cpf' => ['required', 'max:14', new ValidCpf()],
+            'cpf' => ['required', 'max:14', 'unique:users', new ValidCpf()],
         ];
     }
 

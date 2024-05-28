@@ -1,11 +1,8 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import { useForm } from 'laravel-precognition-vue-inertia';
-import Checkbox from '@/Components/Checkbox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import AppLayout from '@/Layouts/AppLayout.vue';
@@ -27,12 +24,12 @@ const submit = () => form.submit({
     preserveScroll: true,
     onSuccess: () => {
         form.reset();
-        toast.success("Pessoa criada com Sucesso!", {
+        toast.success("Usuário criado com Sucesso!", {
             position: 'top-right',
         });
     },
     onError: () => {
-        toast.error("Erro ao atualizar Protocolo!", {
+        toast.error("Erro ao criar Usuário!", {
             position: 'top-right',
         });
     }
@@ -53,14 +50,13 @@ const submit = () => form.submit({
                     <v-container>
                         <v-text-field label="Nome:*" v-model="form.name" variant="outlined"
                             @change="form.validate('name')"></v-text-field>
-                        <InputError class="mt-2" :message="form.errors.name" />
                         <span v-if="form.invalid('name')" class="text-base text-red-500">
                             {{ form.errors.name }}
                         </span>
                     </v-container>
 
                     <v-container>
-                        <v-text-field label="Email:" v-model="form.email" variant="outlined" 
+                        <v-text-field label="Email:*" v-model="form.email" variant="outlined"
                             @change="form.validate('email')"></v-text-field>
                         <span v-if="form.invalid('email')" class="text-base text-red-500">
                             {{ form.errors.email }}
@@ -68,15 +64,15 @@ const submit = () => form.submit({
                     </v-container>
 
                     <v-container>
-                        <v-text-field label="CPF:" v-model="form.cpf" variant="outlined" 
-                            v-mask="'###.###.###-##'" @change="form.validate('cpf')"></v-text-field>
+                        <v-text-field label="CPF:" v-model="form.cpf" variant="outlined" v-mask="'###.###.###-##'"
+                            @change="validateField('cpf')"></v-text-field>>
                         <span v-if="form.invalid('cpf')" class="text-base text-red-500">
                             {{ form.errors.cpf }}
                         </span>
                     </v-container>
 
                     <v-container>
-                        <v-text-field label="Senha:" v-model="form.password" variant="outlined"
+                        <v-text-field label="Senha:*" v-model="form.password" variant="outlined"
                             @change="form.validate('password')" type="password"
                             autocomplete="new-password"></v-text-field>
                         <span v-if="form.invalid('password')" class="text-base text-red-500">
@@ -85,7 +81,7 @@ const submit = () => form.submit({
                     </v-container>
 
                     <v-container>
-                        <v-text-field label="Confirme a Senha:" v-model="form.password_confirmation" variant="outlined"
+                        <v-text-field label="Confirme a Senha:*" v-model="form.password_confirmation" variant="outlined"
                             @change="form.validate('password_confirmation')" type="password"
                             autocomplete="new-password"></v-text-field>
                         <span v-if="form.invalid('password_confirmation')" class="text-base text-red-500">
@@ -95,9 +91,9 @@ const submit = () => form.submit({
 
                     <v-container>
                         <!-- {{ $page.props.auth.user. }} -->
-                        <InputLabel for="type" value="Perfil" class="text-white" />
+                        <InputLabel for="type" value="Perfil:*" class="text-white" />
                         <select v-model="form.type" class="border mt-1 block w-full bg-slate-50 rounded-md shadow-sm">
-                            <option value="">selecione</option>
+                            <option value="">Perfil:*</option>
                             <option value="T" v-if="$page.props.auth.user.type === 'T'">Administrador da TI</option>
                             <option value="S" v-if="$page.props.auth.user.type === 'T'">Administrador do sistema
                             </option>
@@ -106,15 +102,6 @@ const submit = () => form.submit({
                                 Atendente</option>
                         </select>
                         <InputError class="mt-2" :message="form.errors.type" />
-                    </v-container>
-
-                    <v-container>
-                        <InputLabel for="active" value="active" class="text-white" />
-                        <select id="active" v-model="form.active"
-                            class="border mt-1 block w-full bg-slate-50 rounded-md shadow-sm" disabled autofocus>
-                            <option value="S">Ativo</option>
-                            <option value="N">Desativado</option>
-                        </select>
                     </v-container>
 
                     <v-container class="flex items-center justify-between mt-4 ">
