@@ -17,10 +17,11 @@ const props = defineProps({
     reports: Array,
 });
 
+const dateReset = new Date(props.protocols.date);
 const form = useForm('post', route('protocol.store'), {
     description: '',
     term: '',
-    date: null,
+    date: isNaN(dateReset.getTime()) ? null : dateReset,
     people_id: null,
     department_id: null,
     files: [],
@@ -42,6 +43,28 @@ const submit = () => form.submit({
         });
     },
 });
+
+const validateDate = () => {
+    if (!form.date || isNaN(new Date(form.date).getTime())) {
+        form.errors.date = 'A data é obrigatória e deve ser válida.';
+        return false;
+    } else {
+        form.errors.date = null;
+        return true;
+    }
+}
+
+const updateDateReset = (newValue) => {
+    if (!newValue) {
+        form.date = null;
+    } else {
+        const newDate = new Date(newValue);
+        if (!isNaN(newDate.getTime())) {
+            form.date = newDate;
+        }
+    }
+    validateDate();
+}
 
 function validateFiles() {
     const validTypes = ['application/pdf', 'image/png', 'image/jpeg'];
@@ -245,7 +268,7 @@ const downloadPDF = () => {
     <AppLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Protocolos 
+                Protocolos
             </h2>
         </template>
         <div class="py-12">
@@ -284,15 +307,15 @@ const downloadPDF = () => {
                                             <v-container>
                                                 <v-menu v-model="isMenuOpen" :close-on-content-click="false">
                                                     <template v-slot:activator="{ props }">
-                                                        <v-text-field label="Selecione a data"
+                                                        <v-text-field label="Selecione a data:*"
                                                             :model-value="formattedDate" v-bind="props"
-                                                            variant="outlined"></v-text-field>
+                                                            variant="outlined" @update:modelValue="updateDateReset" ></v-text-field>
                                                     </template>
                                                     <v-date-picker v-model="form.date"
                                                         :rules="[() => dateValidation(form.date, 30, 0)]"
                                                         @change="form.validate('date')"></v-date-picker>
                                                 </v-menu>
-                                                <span v-if="form.invalid('date')" class="text-base text-red-500">
+                                                <span class="text-base text-red-500">
                                                     {{ form.errors.date }}
                                                 </span>
                                             </v-container>

@@ -13,9 +13,10 @@ const props = defineProps({
     peoples: Array,
 });
 
+const dateReset = new Date(props.peoples.birth);
 const form = useForm('post', route('people.store'), {
     name: '',
-    birth: null,
+    birth: isNaN(dateReset.getTime()) ? null : dateReset,
     cpf: '',
     sex: '',
     city: '',
@@ -40,6 +41,28 @@ const submit = () => form.submit({
         });
     }
 });
+
+const validateDate = () => {
+    if(!form.date || isNaN(new Date(form.birth).getTime())) {
+        form.errors.birth = 'A data de Nascimento é obrigatória e deve ser válida.'
+        return false;
+    }else {
+        form.errors.birth = null;
+        return true;
+    }
+}
+
+const updateDateReset = (newValue) => {
+    if(!newValue) {
+        form.date = null;
+    } else {
+        const newDate = new Date(newValue);
+        if (!isNaN(newDate.getTime())) {
+            form.birth = newDate;
+        }
+    }
+    validateDate();
+}
 
 // configuração de datas
 const isMenuOpen = ref(false);
@@ -158,13 +181,13 @@ const deletePeople = () => {
                                                     <template v-slot:activator="{ props }">
                                                         <v-text-field label="Selecione a data:*"
                                                             :model-value="formattedDate" v-bind="props"
-                                                            variant="outlined"></v-text-field>
+                                                            variant="outlined" @update:modelValue="updateDateReset"></v-text-field>
                                                     </template>
                                                     <v-date-picker v-model="form.birth"
                                                         :rules="[() => dateValidation(form.birth, 30, 0)]"
                                                         @change="form.validate('birth')"></v-date-picker>
                                                 </v-menu>
-                                                <span v-if="form.invalid('birth')" class="text-base text-red-500">
+                                                <span class="text-base text-red-500">
                                                     {{ form.errors.birth }}
                                                 </span>
                                             </v-container>
